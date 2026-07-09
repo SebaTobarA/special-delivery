@@ -1,0 +1,604 @@
+/* =========================================================
+   Special Delivery — styles.css
+   Mobile-first. Sin frameworks. Paleta basada en la mascota:
+   celeste (primario) + rosa suave (secundario/hover) sobre negro.
+   ========================================================= */
+
+:root {
+  /* Paleta */
+  --color-bg: #0a0a0d;
+  --color-bg-alt: #111116;
+  --color-surface: #17171d;
+  --color-border: #26262f;
+
+  --color-text: #e9edf1;
+  --color-text-muted: #a3adb8;
+
+  --color-primary: #6fe0f5;      /* celeste — acentos, links, bordes activos */
+  --color-primary-dim: #4dc4da;
+  --color-secondary: #ffb3c6;    /* rosa suave — hover/secundario */
+
+  --color-focus: #ffe27a;        /* foco de teclado, alto contraste */
+
+  --radius: 10px;
+  --max-width: 1100px;
+
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* ---------- Reset básico ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+a:hover,
+a:focus-visible {
+  color: var(--color-secondary);
+}
+
+ul {
+  padding-left: 1.2rem;
+}
+
+/* Foco visible y consistente para navegación por teclado */
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.icon {
+  width: 1.1em;
+  height: 1.1em;
+}
+
+/* ---------- Header / Nav ---------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  /* Nota: a propósito NO se usa backdrop-filter acá: crea un "containing
+     block" para los hijos con position:fixed (como .primary-nav en mobile)
+     y el menú quedaría comprimido dentro de la altura del header. */
+  background: rgba(10, 10, 13, 0.97);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.header-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0.7rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--color-text);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.brand:hover,
+.brand:focus-visible {
+  color: var(--color-primary);
+}
+
+.brand-logo {
+  width: 40px;
+  height: 40px;
+}
+
+.brand-name {
+  font-size: 1.05rem;
+  white-space: nowrap;
+}
+
+/* Botón hamburguesa (solo mobile) */
+.nav-toggle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.nav-toggle-bar {
+  display: block;
+  height: 2px;
+  width: 20px;
+  margin: 0 auto;
+  background: var(--color-text);
+  border-radius: 2px;
+}
+
+.primary-nav {
+  position: fixed;
+  inset: 0 0 0 30%;
+  top: 65px;
+  background: var(--color-bg-alt);
+  border-left: 1px solid var(--color-border);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+}
+
+.primary-nav.is-open {
+  transform: translateX(0);
+}
+
+.primary-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.nav-link {
+  color: var(--color-text);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible {
+  color: var(--color-primary);
+}
+
+/* ---------- Botones ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius);
+  font-weight: 700;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  transform: translateY(-1px);
+}
+
+.btn-discord {
+  background: var(--color-primary);
+  color: #0a0a0d;
+}
+
+.btn-discord:hover,
+.btn-discord:focus-visible {
+  background: var(--color-secondary);
+  color: #0a0a0d;
+}
+
+.btn-small {
+  padding: 0.5rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.btn-large {
+  padding: 0.9rem 1.6rem;
+  font-size: 1.05rem;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  padding: 3rem 1rem 2.5rem;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(111, 224, 245, 0.08), transparent 60%);
+}
+
+.hero-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero-logo {
+  width: 140px;
+  height: 140px;
+  margin-bottom: 1rem;
+}
+
+.hero-title {
+  font-size: 2.1rem;
+  margin: 0 0 0.4rem;
+  letter-spacing: 0.03em;
+  background: linear-gradient(180deg, #ffffff, var(--color-primary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-tagline {
+  color: var(--color-text-muted);
+  font-size: 1.05rem;
+  margin: 0 0 1.5rem;
+}
+
+.hero .btn-discord {
+  margin-bottom: 2.2rem;
+}
+
+/* ---------- Carrusel de videos ---------- */
+.carousel {
+  position: relative;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.carousel-track {
+  display: flex;
+  overflow: hidden;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  touch-action: pan-y;
+}
+
+.carousel-slide {
+  flex: 0 0 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--color-surface);
+}
+
+/* Facade: miniatura + botón play. El iframe real solo se crea al hacer click (script.js) */
+.yt-facade {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  background: #000;
+}
+
+.yt-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.yt-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.25);
+  transition: background 0.15s ease;
+}
+
+.yt-facade:hover .yt-play,
+.yt-facade:focus-visible .yt-play {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.carousel-slide iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: rgba(10, 10, 13, 0.75);
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.carousel-arrow:hover,
+.carousel-arrow:focus-visible {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.carousel-arrow-prev {
+  left: 8px;
+}
+
+.carousel-arrow-next {
+  right: 8px;
+}
+
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+.carousel-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  cursor: pointer;
+  padding: 0;
+}
+
+.carousel-dot.is-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+/* ---------- Secciones genéricas ---------- */
+.section {
+  padding: 3rem 1rem;
+}
+
+.section-alt {
+  background: var(--color-bg-alt);
+}
+
+.section-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.section-title {
+  font-size: 1.6rem;
+  margin: 0 0 1.8rem;
+  color: var(--color-primary);
+  letter-spacing: 0.02em;
+}
+
+.section-lead {
+  color: var(--color-text-muted);
+  max-width: 65ch;
+}
+
+/* ---------- Timeline (Historia) ---------- */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  border-left: 2px solid var(--color-border);
+  padding-left: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.timeline-item {
+  position: relative;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -1.53rem;
+  top: 0.3rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-bg);
+}
+
+.timeline-content h3 {
+  margin: 0 0 0.3rem;
+  font-size: 1.1rem;
+}
+
+.timeline-content p {
+  margin: 0;
+  color: var(--color-text-muted);
+  max-width: 65ch;
+}
+
+/* ---------- Galería (Historia) ---------- */
+.gallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.gallery-img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+}
+
+/* ---------- Reclutamiento ---------- */
+.requirements-title {
+  margin-top: 2rem;
+  font-size: 1.15rem;
+}
+
+.requirements-list {
+  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.recruit-cta {
+  margin-top: 2.2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.recruit-cta-text {
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ---------- Footer ---------- */
+.site-footer {
+  border-top: 1px solid var(--color-border);
+  padding: 2rem 1rem 1.5rem;
+  text-align: center;
+}
+
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+}
+
+.footer-nav {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.footer-nav a {
+  color: var(--color-text-muted);
+}
+
+.footer-nav a:hover,
+.footer-nav a:focus-visible {
+  color: var(--color-primary);
+}
+
+.footer-discord {
+  color: var(--color-text-muted);
+}
+
+.footer-discord:hover,
+.footer-discord:focus-visible {
+  color: var(--color-primary);
+}
+
+.footer-discord .icon {
+  width: 1.6em;
+  height: 1.6em;
+}
+
+.footer-copy {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+/* =========================================================
+   Breakpoints — mobile-first: de aquí en adelante, pantallas
+   más grandes (tablet / desktop)
+   ========================================================= */
+
+@media (min-width: 720px) {
+  .nav-toggle {
+    display: none;
+  }
+
+  .primary-nav {
+    position: static;
+    inset: auto;
+    transform: none;
+    background: transparent;
+    border: none;
+    padding: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .primary-nav ul {
+    flex-direction: row;
+    gap: 1.5rem;
+  }
+
+  .hero-title {
+    font-size: 2.8rem;
+  }
+
+  .hero-logo {
+    width: 180px;
+    height: 180px;
+  }
+
+  .gallery {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .recruit-cta {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+@media (min-width: 960px) {
+  .section-title {
+    font-size: 1.9rem;
+  }
+}
+
+/* Respeta usuarios que prefieren menos animación */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
