@@ -14,6 +14,11 @@
 
   <!-- Preconnect solo a lo estrictamente necesario para el facade de YouTube (se activa recién al hacer click) -->
   <link rel="preconnect" href="https://i.ytimg.com">
+
+  <!-- Si JS está deshabilitado, el contenido con animación de scroll debe verse igual sin quedar oculto -->
+  <noscript>
+    <style>.reveal { opacity: 1 !important; transform: none !important; }</style>
+  </noscript>
 </head>
 <body>
 
@@ -34,7 +39,7 @@
       <nav class="primary-nav" id="primaryNav">
         <ul>
           <li><a href="#inicio" class="nav-link">Inicio</a></li>
-          <li><a href="#historia" class="nav-link">Historia</a></li>
+          <li><a href="#historia" class="nav-link">Acerca de la Guild</a></li>
           <li><a href="#reclutamiento" class="nav-link">Reclutamiento</a></li>
         </ul>
         <a href="https://discord.gg/XnTrEKEGw" target="_blank" rel="noopener noreferrer" class="btn btn-discord btn-small">
@@ -53,15 +58,23 @@
     <!-- ============ INICIO / HERO ============ -->
     <section id="inicio" class="hero">
       <div class="hero-inner">
-        <img src="assets/mascota-fantasma-icono.svg" alt="Mascota fantasma de Special Delivery" class="hero-logo" width="180" height="180">
+        <div class="hero-logo-wrap">
+          <img src="assets/mascota-fantasma-icono.svg" alt="Mascota fantasma de Special Delivery" class="hero-logo" width="180" height="180">
+        </div>
         <h1 class="hero-title">Special Delivery</h1>
-        <p class="hero-tagline">[TAGLINE DE LA GUILD]</p>
+        <p class="hero-tagline">Siendo competitivos desde el 2008</p>
 
         <a href="https://discord.gg/XnTrEKEGw" target="_blank" rel="noopener noreferrer" class="btn btn-discord btn-large">
           <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
             <path fill="currentColor" d="M20.317 4.369a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.009c.12.099.246.198.373.292a.077.077 0 0 1-.006.128 12.3 12.3 0 0 1-1.873.891.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.674-3.549-13.662a.06.06 0 0 0-.031-.028zM8.02 15.331c-1.183 0-2.157-1.086-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.419 0 1.333-.955 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.086-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.419 0 1.333-.946 2.419-2.157 2.419z"/>
           </svg>
           <span>Únete a nuestro Discord</span>
+          <!-- Se completa con JS (script.js) leyendo la API pública de invitaciones de Discord.
+               Si la petición falla, queda oculto y el botón funciona como link normal. -->
+          <span class="discord-online" data-discord-online hidden>
+            <span class="discord-online-dot" aria-hidden="true"></span>
+            <span class="discord-online-count" data-discord-online-count></span>
+          </span>
         </a>
 
         <!-- ===== Carrusel de videos de YouTube (facade lazy-load) ===== -->
@@ -112,49 +125,115 @@
       </div>
     </section>
 
-    <!-- ============ HISTORIA ============ -->
+    <!-- ============ ACERCA DE LA GUILD ============ -->
     <section id="historia" class="section">
       <div class="section-inner">
-        <h2 class="section-title">Historia de la Guild</h2>
+        <h2 class="section-title reveal">Acerca de la Guild</h2>
+      </div>
 
-        <div class="timeline">
-          <div class="timeline-item">
-            <div class="timeline-marker" aria-hidden="true"></div>
-            <div class="timeline-content">
-              <h3>Fundación</h3>
-              <p>[Lorem ipsum / completar con historia real: cómo y cuándo se fundó Special Delivery, quiénes la iniciaron y por qué.]</p>
-            </div>
-          </div>
+      <!-- Scroll horizontal tipo carrusel: al bajar por esta zona, los paneles se
+           deslizan hacia la izquierda (efecto "hacia la derecha" del contenido).
+           Se activa vía JS (script.js) solo si hay soporte y sin prefers-reduced-motion;
+           sin JS o con "menos movimiento" esto se ve como bloques apilados normales. -->
+      <div class="hscroll" id="hscrollHistoria">
+        <div class="hscroll-sticky">
+          <div class="hscroll-track" id="hscrollTrack">
 
-          <div class="timeline-item">
-            <div class="timeline-marker" aria-hidden="true"></div>
-            <div class="timeline-content">
-              <h3>Primeros hitos</h3>
-              <p>[Lorem ipsum / completar con historia real: primeras guerras de guild, primeros bosses, primeros miembros destacados.]</p>
+            <!-- Panel 1: historia -->
+            <div class="hscroll-panel">
+              <div class="hscroll-panel-inner reveal">
+                <p class="hscroll-text">En el 2008 junto a nuestros amigos fundamos Special Delivery para jugar en Ragnarok Online, con el tiempo participamos en distintos servidores hasta que ahora hemos decidido participar en la versión de Ragnarok Online Origin Classic Americas.</p>
+              </div>
             </div>
-          </div>
 
-          <div class="timeline-item">
-            <div class="timeline-marker" aria-hidden="true"></div>
-            <div class="timeline-content">
-              <h3>Eventos importantes</h3>
-              <p>[Lorem ipsum / completar con historia real: eventos, torneos o logros relevantes de la comunidad.]</p>
-            </div>
-          </div>
+            <!-- Panel 2: liderazgo -->
+            <div class="hscroll-panel">
+              <div class="hscroll-panel-inner reveal">
+                <h3 class="leadership-title">Liderazgo</h3>
 
-          <div class="timeline-item">
-            <div class="timeline-marker" aria-hidden="true"></div>
-            <div class="timeline-content">
-              <h3>Hoy</h3>
-              <p>[Lorem ipsum / completar con historia real: dónde está la guild ahora y hacia dónde va.]</p>
+                <div class="org-chart">
+                  <div class="org-tier org-tier-lead">
+                    <p class="org-role">Guild Leader</p>
+                    <div class="org-people">
+                      <div class="org-person">
+                        <span class="org-avatar" aria-hidden="true">H</span>
+                        <span class="org-name">Hunteriwi</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="org-tier">
+                    <p class="org-role">Vice Guild Leader</p>
+                    <div class="org-people">
+                      <div class="org-person">
+                        <span class="org-avatar" aria-hidden="true">A</span>
+                        <span class="org-name">Ahead</span>
+                      </div>
+                      <div class="org-person">
+                        <span class="org-avatar" aria-hidden="true">G</span>
+                        <span class="org-name">Gotic</span>
+                      </div>
+                      <div class="org-person">
+                        <span class="org-avatar" aria-hidden="true">S</span>
+                        <span class="org-name">Styan</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="org-tier">
+                    <p class="org-role">Comandante</p>
+                    <div class="org-people">
+                      <div class="org-person">
+                        <span class="org-avatar" aria-hidden="true">P</span>
+                        <span class="org-name">Por definir</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="org-tier">
+                    <p class="org-role">Oficiales</p>
+                    <div class="org-people">
+                      <div class="org-person">
+                        <span class="org-avatar" aria-hidden="true">P</span>
+                        <span class="org-name">Pendiente</span>
+                      </div>
+                      <div class="org-person">
+                        <span class="org-avatar" aria-hidden="true">P</span>
+                        <span class="org-name">Pendiente</span>
+                      </div>
+                      <div class="org-person">
+                        <span class="org-avatar" aria-hidden="true">P</span>
+                        <span class="org-name">Pendiente</span>
+                      </div>
+                      <div class="org-person">
+                        <span class="org-avatar" aria-hidden="true">P</span>
+                        <span class="org-name">Pendiente</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="org-tier">
+                    <p class="org-role">Estrella del Carisma</p>
+                    <div class="org-people">
+                      <div class="org-person">
+                        <span class="org-avatar" aria-hidden="true">L</span>
+                        <span class="org-name">Lulupe</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
+
           </div>
         </div>
+      </div>
 
+      <div class="section-inner">
         <div class="gallery">
-          <img src="assets/screenshot-placeholder-1.svg" alt="Captura de pantalla placeholder 1 del juego" loading="lazy" class="gallery-img">
-          <img src="assets/screenshot-placeholder-2.svg" alt="Captura de pantalla placeholder 2 del juego" loading="lazy" class="gallery-img">
-          <img src="assets/screenshot-placeholder-3.svg" alt="Captura de pantalla placeholder 3 del juego" loading="lazy" class="gallery-img">
+          <img src="assets/screenshot-placeholder-1.svg" alt="Captura de pantalla placeholder 1 del juego" loading="lazy" class="gallery-img reveal">
+          <img src="assets/screenshot-placeholder-2.svg" alt="Captura de pantalla placeholder 2 del juego" loading="lazy" class="gallery-img reveal">
+          <img src="assets/screenshot-placeholder-3.svg" alt="Captura de pantalla placeholder 3 del juego" loading="lazy" class="gallery-img reveal">
         </div>
       </div>
     </section>
@@ -162,25 +241,29 @@
     <!-- ============ RECLUTAMIENTO ============ -->
     <section id="reclutamiento" class="section section-alt">
       <div class="section-inner">
-        <h2 class="section-title">Reclutamiento</h2>
-        <p class="section-lead">[Placeholder: qué busca la guild en nuevos miembros — actitud, compromiso, tipo de jugador que encaja con Special Delivery.]</p>
+        <h2 class="section-title reveal">Reclutamiento</h2>
+        <p class="section-lead reveal">[Placeholder: qué busca la guild en nuevos miembros — actitud, compromiso, tipo de jugador que encaja con Special Delivery.]</p>
 
-        <h3 class="requirements-title">Requisitos</h3>
+        <h3 class="requirements-title reveal">Requisitos</h3>
         <ul class="requirements-list">
-          <li>[Nivel mínimo: placeholder]</li>
-          <li>[Clases buscadas: placeholder]</li>
-          <li>[Disponibilidad horaria: placeholder]</li>
-          <li>[Uso de Discord y participación en eventos: placeholder]</li>
-          <li>[Otro requisito: placeholder]</li>
+          <li class="reveal">[Nivel mínimo: placeholder]</li>
+          <li class="reveal">[Clases buscadas: placeholder]</li>
+          <li class="reveal">[Disponibilidad horaria: placeholder]</li>
+          <li class="reveal">[Uso de Discord y participación en eventos: placeholder]</li>
+          <li class="reveal">[Otro requisito: placeholder]</li>
         </ul>
 
-        <div class="recruit-cta">
+        <div class="recruit-cta reveal">
           <p class="recruit-cta-text">Las postulaciones se gestionan por Discord.</p>
           <a href="https://discord.gg/XnTrEKEGw" target="_blank" rel="noopener noreferrer" class="btn btn-discord btn-large">
             <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path fill="currentColor" d="M20.317 4.369a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.009c.12.099.246.198.373.292a.077.077 0 0 1-.006.128 12.3 12.3 0 0 1-1.873.891.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.674-3.549-13.662a.06.06 0 0 0-.031-.028zM8.02 15.331c-1.183 0-2.157-1.086-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.419 0 1.333-.955 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.086-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.419 0 1.333-.946 2.419-2.157 2.419z"/>
             </svg>
             <span>Postular por Discord</span>
+            <span class="discord-online" data-discord-online hidden>
+              <span class="discord-online-dot" aria-hidden="true"></span>
+              <span class="discord-online-count" data-discord-online-count></span>
+            </span>
           </a>
         </div>
       </div>
@@ -198,7 +281,7 @@
 
       <nav class="footer-nav" aria-label="Enlaces rápidos">
         <a href="#inicio">Inicio</a>
-        <a href="#historia">Historia</a>
+        <a href="#historia">Acerca de la Guild</a>
         <a href="#reclutamiento">Reclutamiento</a>
       </nav>
 

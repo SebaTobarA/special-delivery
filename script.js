@@ -1,13 +1,21 @@
 /* =========================================================
    Special Delivery — script.js
-   JS vanilla, sin dependencias. Tres responsabilidades:
+   JS vanilla, sin dependencias. Responsabilidades:
    1) Menú de navegación móvil
-   2) Carrusel de videos (flechas, dots, swipe táctil)
+   2) Carrusel de videos (flechas, dots, swipe táctil, autoplay)
    3) Facade de YouTube: solo crea el <iframe> al hacer click
+   4) Header que gana sombra al hacer scroll
+   5) Scroll-reveal de secciones (IntersectionObserver)
+   6) Contador de miembros conectados en Discord (API pública de invitaciones)
+   7) Scroll horizontal tipo carrusel en "Acerca de la Guild"
    ========================================================= */
 
 (function () {
   'use strict';
+
+  // Se respeta en todo el archivo: sin animaciones de movimiento continuo
+  // (autoplay del carrusel, etc.) para quien prefiere menos motion.
+  var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------- 1) Menú móvil ---------- */
   var navToggle = document.getElementById('navToggle');
@@ -99,6 +107,35 @@
     });
 
     update();
+
+    // Autoplay suave: avanza solo, se pausa con hover/foco/touch y se
+    // detiene para siempre apenas se carga un video real (ver sección 3).
+    var AUTOPLAY_MS = 6000;
+    var autoplayTimer = null;
+
+    function startAutoplay() {
+      if (prefersReducedMotion || autoplayTimer || slides.length < 2) return;
+      autoplayTimer = window.setInterval(function () {
+        goTo(current + 1);
+      }, AUTOPLAY_MS);
+    }
+
+    function stopAutoplay() {
+      window.clearInterval(autoplayTimer);
+      autoplayTimer = null;
+    }
+
+    var carouselEl = document.getElementById('videoCarousel');
+    carouselEl.addEventListener('pointerenter', stopAutoplay);
+    carouselEl.addEventListener('pointerleave', startAutoplay);
+    carouselEl.addEventListener('focusin', stopAutoplay);
+    carouselEl.addEventListener('focusout', startAutoplay);
+    carouselEl.addEventListener('touchstart', stopAutoplay, { passive: true });
+
+    startAutoplay();
+
+    // La sección 3 llama a esto al reproducir un video para no seguir avanzando encima
+    var stopCarouselAutoplay = stopAutoplay;
   }
 
   /* ---------- 3) Facade de YouTube (lazy-load real) ---------- */
@@ -121,6 +158,7 @@
   document.querySelectorAll('.yt-facade').forEach(function (facade) {
     facade.addEventListener('click', function () {
       loadYouTubeVideo(facade);
+      if (typeof stopCarouselAutoplay === 'function') stopCarouselAutoplay();
     });
 
     // Accesible por teclado (Enter / Espacio) ya que es un elemento con role="button"
@@ -128,8 +166,130 @@
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
         loadYouTubeVideo(facade);
+        if (typeof stopCarouselAutoplay === 'function') stopCarouselAutoplay();
       }
     });
   });
+
+  /* ---------- 4) Header con sombra al hacer scroll ---------- */
+  var siteHeader = document.querySelector('.site-header');
+
+  if (siteHeader) {
+    var ticking = false;
+
+    function updateHeaderState() {
+      siteHeader.classList.toggle('is-scrolled', window.scrollY > 8);
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        window.requestAnimationFrame(updateHeaderState);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    updateHeaderState();
+  }
+
+  /* ---------- 5) Scroll-reveal con IntersectionObserver ---------- */
+  var revealEls = document.querySelectorAll('.reveal');
+
+  if (revealEls.length && 'IntersectionObserver' in window) {
+    var revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    revealEls.forEach(function (el) {
+      revealObserver.observe(el);
+    });
+  } else {
+    // Sin soporte de IntersectionObserver: mostrar todo directamente
+    revealEls.forEach(function (el) {
+      el.classList.add('is-visible');
+    });
+  }
+
+  /* ---------- 6) Conectados en Discord ---------- */
+  // Usa la API pública de invitaciones de Discord (sin autenticación, sin
+  // necesidad de habilitar el widget del server). Si falla o el servidor
+  // bloquea la petición, el badge queda oculto y el botón sigue funcionando
+  // como un link normal a Discord.
+  var DISCORD_INVITE_CODE = 'XnTrEKEGw';
+  var DISCORD_REFRESH_MS = 60000;
+
+  function updateDiscordOnlineCount() {
+    fetch('https://discord.com/api/v10/invites/' + DISCORD_INVITE_CODE + '?with_counts=true')
+      .then(function (res) {
+        if (!res.ok) throw new Error('Discord invite request failed');
+        return res.json();
+      })
+      .then(function (data) {
+        var online = data.approximate_presence_count;
+        if (typeof online !== 'number') return;
+
+        // Visualmente solo se muestra el número (el punto verde ya indica "en línea"),
+        // pero se deja un aria-label con la frase completa para lectores de pantalla.
+        document.querySelectorAll('[data-discord-online-count]').forEach(function (el) {
+          el.textContent = String(online);
+        });
+        document.querySelectorAll('[data-discord-online]').forEach(function (el) {
+          el.hidden = false;
+          el.setAttribute('aria-label', online + (online === 1 ? ' conectado' : ' conectados'));
+        });
+      })
+      .catch(function () {
+        // Silencioso a propósito: sin conteo, el botón es un link normal.
+      });
+  }
+
+  updateDiscordOnlineCount();
+  window.setInterval(updateDiscordOnlineCount, DISCORD_REFRESH_MS);
+
+  /* ---------- 7) Scroll horizontal tipo carrusel ("Acerca de la Guild") ---------- */
+  // Por defecto el HTML ya se ve bien apilado normalmente (progressive
+  // enhancement). Solo si hay más de un panel y el usuario no pidió menos
+  // movimiento, se activa el "pin" con position:sticky + translateX según
+  // el progreso de scroll dentro del contenedor alto (.hscroll).
+  var hscroll = document.getElementById('hscrollHistoria');
+
+  if (hscroll && !prefersReducedMotion) {
+    var hscrollSticky = hscroll.querySelector('.hscroll-sticky');
+    var hscrollTrack = hscroll.querySelector('.hscroll-track');
+    var hscrollPanels = Array.prototype.slice.call(hscrollTrack.children);
+
+    if (hscrollPanels.length > 1) {
+      hscroll.classList.add('hscroll-enabled');
+      hscroll.style.height = (hscrollPanels.length * 100) + 'vh';
+
+      var hscrollTicking = false;
+
+      function updateHscroll() {
+        var rect = hscroll.getBoundingClientRect();
+        var scrollableDistance = hscroll.offsetHeight - window.innerHeight;
+        var progress = scrollableDistance > 0 ? (-rect.top) / scrollableDistance : 0;
+        progress = Math.max(0, Math.min(1, progress));
+
+        var maxTranslate = hscrollTrack.scrollWidth - hscrollSticky.clientWidth;
+        hscrollTrack.style.transform = 'translateX(-' + (progress * maxTranslate) + 'px)';
+        hscrollTicking = false;
+      }
+
+      window.addEventListener('scroll', function () {
+        if (!hscrollTicking) {
+          window.requestAnimationFrame(updateHscroll);
+          hscrollTicking = true;
+        }
+      }, { passive: true });
+
+      window.addEventListener('resize', updateHscroll);
+      updateHscroll();
+    }
+  }
 
 })();

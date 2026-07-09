@@ -26,6 +26,82 @@
   --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+/* ---------- Animaciones reutilizables ---------- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes floatY {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes ghostGlowPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(111, 224, 245, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(111, 224, 245, 0);
+  }
+}
+
+@keyframes playPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+/* Scroll-reveal: oculto hasta que script.js le agrega .is-visible al entrar en viewport.
+   El <noscript> en el <head> asegura que sin JS el contenido siga siendo visible. */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Efecto cascada dentro de cada grupo (galería, requisitos) */
+.gallery-img.reveal:nth-child(2) { transition-delay: 0.1s; }
+.gallery-img.reveal:nth-child(3) { transition-delay: 0.2s; }
+
+.requirements-list li.reveal:nth-child(2) { transition-delay: 0.06s; }
+.requirements-list li.reveal:nth-child(3) { transition-delay: 0.12s; }
+.requirements-list li.reveal:nth-child(4) { transition-delay: 0.18s; }
+.requirements-list li.reveal:nth-child(5) { transition-delay: 0.24s; }
+
 /* ---------- Reset básico ---------- */
 *,
 *::before,
@@ -86,6 +162,12 @@ ul {
      y el menú quedaría comprimido dentro de la altura del header. */
   background: rgba(10, 10, 13, 0.97);
   border-bottom: 1px solid var(--color-border);
+  transition: box-shadow 0.25s ease;
+}
+
+/* Se agrega al hacer scroll (ver script.js) para separar el header del contenido */
+.site-header.is-scrolled {
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
 }
 
 .header-inner {
@@ -173,9 +255,12 @@ ul {
 }
 
 .nav-link {
+  position: relative;
+  display: inline-block;
   color: var(--color-text);
   font-weight: 600;
   font-size: 1.05rem;
+  padding-bottom: 2px;
 }
 
 .nav-link:hover,
@@ -183,23 +268,46 @@ ul {
   color: var(--color-primary);
 }
 
+/* Subrayado animado: crece desde el centro al pasar el mouse o enfocar con teclado */
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 2px;
+  background: var(--color-primary);
+  transform: scaleX(0);
+  transition: transform 0.25s ease;
+}
+
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+
 /* ---------- Botones ---------- */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
   border-radius: var(--radius);
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   border: 2px solid transparent;
   cursor: pointer;
-  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  transition: transform 0.15s ease, background 0.15s ease, color 0.15s ease,
+    border-color 0.15s ease, box-shadow 0.2s ease;
   white-space: nowrap;
 }
 
 .btn:hover,
 .btn:focus-visible {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(111, 224, 245, 0.35);
 }
 
 .btn-discord {
@@ -211,6 +319,53 @@ ul {
 .btn-discord:focus-visible {
   background: var(--color-secondary);
   color: #0a0a0d;
+  box-shadow: 0 8px 24px rgba(255, 179, 198, 0.4);
+}
+
+/* Pulso suave en los dos CTA principales (hero y reclutamiento) para invitar al click,
+   se detiene al pasar el mouse para no pelear con el glow del :hover */
+.hero .btn-discord,
+.recruit-cta .btn-discord {
+  animation: pulseGlow 2.6s ease-in-out infinite;
+}
+
+.hero .btn-discord:hover,
+.hero .btn-discord:focus-visible,
+.recruit-cta .btn-discord:hover,
+.recruit-cta .btn-discord:focus-visible {
+  animation-play-state: paused;
+}
+
+/* Conteo de conectados dentro del botón de Discord (ver data-discord-online en
+   script.js). A propósito sin caja/fondo propio: solo semáforo + número,
+   integrado tipográficamente con el resto del texto del botón. */
+.discord-online {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.discord-online-count {
+  font-variant-numeric: tabular-nums;
+}
+
+.discord-online-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #23a55a;
+  box-shadow: 0 0 0 0 rgba(35, 165, 90, 0.6);
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(35, 165, 90, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(35, 165, 90, 0);
+  }
 }
 
 .btn-small {
@@ -239,10 +394,29 @@ ul {
   align-items: center;
 }
 
+.hero-logo-wrap {
+  position: relative;
+  margin-bottom: 1rem;
+  animation: fadeInUp 0.7s ease both;
+}
+
+/* Resplandor difuso detrás del fantasma, pulsa lentamente */
+.hero-logo-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 10%;
+  background: radial-gradient(circle, rgba(111, 224, 245, 0.45), transparent 70%);
+  filter: blur(18px);
+  z-index: 0;
+  animation: ghostGlowPulse 3.6s ease-in-out infinite;
+}
+
 .hero-logo {
+  position: relative;
+  z-index: 1;
   width: 140px;
   height: 140px;
-  margin-bottom: 1rem;
+  animation: floatY 4.5s ease-in-out infinite;
 }
 
 .hero-title {
@@ -253,16 +427,33 @@ ul {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  animation: fadeInUp 0.7s ease both;
+  animation-delay: 0.1s;
 }
 
+/* Insignia tipo "fundado en" en vez de texto plano */
 .hero-tagline {
-  color: var(--color-text-muted);
-  font-size: 1.05rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-secondary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.4rem 1.1rem;
+  border: 1px solid rgba(255, 179, 198, 0.35);
+  border-radius: 999px;
+  background: rgba(255, 179, 198, 0.07);
   margin: 0 0 1.5rem;
+  animation: fadeInUp 0.7s ease both;
+  animation-delay: 0.2s;
 }
 
 .hero .btn-discord {
   margin-bottom: 2.2rem;
+  animation: fadeInUp 0.7s ease both, pulseGlow 2.6s ease-in-out infinite;
+  animation-delay: 0.3s, 0.9s;
 }
 
 /* ---------- Carrusel de videos ---------- */
@@ -312,9 +503,20 @@ ul {
   transition: background 0.15s ease;
 }
 
+.yt-play svg {
+  animation: playPulse 2.4s ease-in-out infinite;
+  transition: transform 0.2s ease;
+}
+
 .yt-facade:hover .yt-play,
 .yt-facade:focus-visible .yt-play {
   background: rgba(0, 0, 0, 0.1);
+}
+
+.yt-facade:hover .yt-play svg,
+.yt-facade:focus-visible .yt-play svg {
+  transform: scale(1.15);
+  animation-play-state: paused;
 }
 
 .carousel-slide iframe {
@@ -338,12 +540,15 @@ ul {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;
 }
 
 .carousel-arrow:hover,
 .carousel-arrow:focus-visible {
   color: var(--color-primary);
   border-color: var(--color-primary);
+  background: rgba(111, 224, 245, 0.12);
+  transform: translateY(-50%) scale(1.1);
 }
 
 .carousel-arrow-prev {
@@ -369,11 +574,19 @@ ul {
   background: var(--color-surface);
   cursor: pointer;
   padding: 0;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.carousel-dot:hover,
+.carousel-dot:focus-visible {
+  border-color: var(--color-primary);
+  transform: scale(1.3);
 }
 
 .carousel-dot.is-active {
   background: var(--color-primary);
   border-color: var(--color-primary);
+  transform: scale(1.2);
 }
 
 /* ---------- Secciones genéricas ---------- */
@@ -402,43 +615,145 @@ ul {
   max-width: 65ch;
 }
 
-/* ---------- Timeline (Historia) ---------- */
-.timeline {
+/* ---------- Scroll horizontal tipo carrusel ("Acerca de la Guild") ----------
+   Por defecto (sin JS, o con prefers-reduced-motion) esto es un bloque
+   apilado normal: cada .hscroll-panel se lee de arriba hacia abajo, sin
+   scroll-jacking. script.js agrega .hscroll-enabled solo cuando corresponde
+   activar el efecto de scroll horizontal fijado (position: sticky). */
+.hscroll-track {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  border-left: 2px solid var(--color-border);
-  padding-left: 1.2rem;
-  margin-bottom: 2rem;
+  gap: 3rem;
 }
 
-.timeline-item {
-  position: relative;
+.hscroll-panel {
+  width: 100%;
+  padding: 1.5rem 0;
 }
 
-.timeline-marker {
-  position: absolute;
-  left: -1.53rem;
-  top: 0.3rem;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  box-shadow: 0 0 0 3px var(--color-bg);
+.hscroll-panel-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
 }
 
-.timeline-content h3 {
-  margin: 0 0 0.3rem;
+.hscroll-text {
   font-size: 1.1rem;
-}
-
-.timeline-content p {
-  margin: 0;
-  color: var(--color-text-muted);
+  line-height: 1.7;
+  color: var(--color-text);
   max-width: 65ch;
 }
 
-/* ---------- Galería (Historia) ---------- */
+.hscroll-enabled.hscroll {
+  position: relative;
+}
+
+.hscroll-enabled .hscroll-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.hscroll-enabled .hscroll-track {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 0;
+  width: max-content;
+  will-change: transform;
+}
+
+.hscroll-enabled .hscroll-panel {
+  width: 100vw;
+  flex: 0 0 100vw;
+  padding: 2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* ---------- Liderazgo: organigrama (panel 2 del scroll horizontal) ---------- */
+.leadership-title {
+  color: var(--color-primary);
+  font-size: 1.4rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+  margin: 0 0 1.4rem;
+}
+
+.org-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.org-tier {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.org-role {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.org-people {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem 1.4rem;
+}
+
+.org-person {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.org-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary);
+  background: linear-gradient(160deg, rgba(111, 224, 245, 0.18), rgba(255, 179, 198, 0.14));
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.org-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+/* Guild Leader: jerarquía visual más alta dentro del organigrama */
+.org-tier-lead .org-avatar {
+  flex-basis: 52px;
+  width: 52px;
+  height: 52px;
+  font-size: 1.2rem;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 4px rgba(255, 179, 198, 0.15);
+}
+
+.org-tier-lead .org-name {
+  font-size: 1.05rem;
+}
+
+/* ---------- Galería (Acerca de la Guild) ---------- */
 .gallery {
   display: grid;
   grid-template-columns: 1fr;
@@ -450,6 +765,15 @@ ul {
   height: auto;
   border-radius: var(--radius);
   border: 1px solid var(--color-border);
+  /* incluye opacity acá (no solo en .reveal) porque esta regla, al ser más
+     específica en el orden del archivo, reemplaza por completo la propiedad
+     "transition" de .reveal en vez de combinarse con ella */
+  transition: opacity 0.5s ease, transform 0.25s ease, border-color 0.25s ease;
+}
+
+.gallery-img:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary);
 }
 
 /* ---------- Reclutamiento ---------- */
@@ -600,5 +924,17 @@ ul {
   * {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  /* Las animaciones infinitas (float, glow, pulse) se apagan del todo en vez
+     de solo acortarse, para no generar movimiento constante e innecesario */
+  .hero-logo,
+  .hero-logo-wrap::before,
+  .hero .btn-discord,
+  .recruit-cta .btn-discord,
+  .yt-play svg,
+  .discord-online-dot {
+    animation: none !important;
   }
 }
