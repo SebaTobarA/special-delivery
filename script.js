@@ -8,7 +8,6 @@
    5) Scroll-reveal de secciones (IntersectionObserver)
    6) Contador de miembros conectados en Discord (API pública de invitaciones)
    7) Partículas de fondo decorativas en "Acerca de la Guild"
-   8) Rail de 2 paneles en "Acerca de la Guild" (historia / liderazgo)
    ========================================================= */
 
 (function () {
@@ -253,12 +252,8 @@
   }
 
   /* ---------- 5) Scroll-reveal con IntersectionObserver ---------- */
-  // Los elementos [data-reveal-on-rail] (panel 2 de "Acerca de la Guild") NO
-  // se manejan acá: arrancan ocultos y solo se revelan cuando el rail navega
-  // hasta ese panel (ver sección 7.5), para que el efecto se vea en el
-  // momento correcto en vez de dispararse mientras están fuera de vista por
-  // el overflow:hidden del rail (el IntersectionObserver no sabe de eso).
-  var revealEls = document.querySelectorAll('.reveal:not([data-reveal-on-rail])');
+  // .reveal: se revela una vez al entrar en viewport y queda así para siempre.
+  var revealEls = document.querySelectorAll('.reveal');
 
   if (revealEls.length && 'IntersectionObserver' in window) {
     var revealObserver = new IntersectionObserver(function (entries) {
@@ -276,6 +271,34 @@
   } else {
     // Sin soporte de IntersectionObserver: mostrar todo directamente
     revealEls.forEach(function (el) {
+      el.classList.add('is-visible');
+    });
+  }
+
+  // .reveal-scroll: variante reversible usada en "Acerca de la Guild" — se
+  // muestra al entrar en el viewport y se vuelve a ocultar al salir (subir
+  // de nuevo hacia el Hero), sin scroll-jacking ni botones: navegación 100%
+  // con el scroll normal de la página.
+  var revealScrollEls = document.querySelectorAll('.reveal-scroll');
+
+  if (revealScrollEls.length && 'IntersectionObserver' in window) {
+    if (prefersReducedMotion) {
+      revealScrollEls.forEach(function (el) {
+        el.classList.add('is-visible');
+      });
+    } else {
+      var revealScrollObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          entry.target.classList.toggle('is-visible', entry.isIntersecting);
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+      revealScrollEls.forEach(function (el) {
+        revealScrollObserver.observe(el);
+      });
+    }
+  } else {
+    revealScrollEls.forEach(function (el) {
       el.classList.add('is-visible');
     });
   }
@@ -340,94 +363,6 @@
       }
       particlesContainer.appendChild(particle);
     }
-  }
-
-  /* ---------- 8) Rail de 2 paneles en "Acerca de la Guild" ---------- */
-  // Mismo mecanismo que el carrusel de videos (barra de progreso + flechas +
-  // swipe), pero con un solo panel completo visible a la vez (no varias
-  // tarjetas). El panel 2 (Liderazgo) recién revela su título y su
-  // organigrama cuando se navega hasta ahí.
-  var railTrack = document.getElementById('aboutRailTrack');
-  var railPrevBtn = document.getElementById('aboutRailPrev');
-  var railNextBtn = document.getElementById('aboutRailNext');
-  var railProgressBar = document.getElementById('aboutRailProgressBar');
-
-  if (railTrack && railPrevBtn && railNextBtn && railProgressBar) {
-    var railSlides = Array.prototype.slice.call(railTrack.children);
-    var railCurrent = 0;
-
-    function revealRailSlide(index) {
-      var slide = railSlides[index];
-      if (!slide) return;
-      slide.querySelectorAll('[data-reveal-on-rail]').forEach(function (el) {
-        el.classList.add('is-visible');
-      });
-    }
-
-    function updateRail() {
-      railTrack.style.transform = 'translateX(-' + (railCurrent * 100) + '%)';
-      // El track toma la altura del panel activo (no la del más alto de
-      // todos) para no dejar un espacio vacío enorme debajo del panel más
-      // corto — eso hacía parecer que la sección terminaba ahí y las
-      // flechas, al fondo de ese espacio, pasaban desapercibidas.
-      railTrack.style.height = railSlides[railCurrent].offsetHeight + 'px';
-      var max = railSlides.length - 1;
-      railProgressBar.style.width = (max > 0 ? (railCurrent / max) * 100 : 0) + '%';
-      revealRailSlide(railCurrent);
-    }
-
-    function goToRail(index) {
-      railCurrent = Math.max(0, Math.min(railSlides.length - 1, index));
-      updateRail();
-    }
-
-    railPrevBtn.addEventListener('click', function () {
-      goToRail(railCurrent - 1);
-    });
-
-    railNextBtn.addEventListener('click', function () {
-      goToRail(railCurrent + 1);
-    });
-
-    railTrack.style.transition = 'transform 0.4s ease';
-    railTrack.style.willChange = 'transform';
-
-    // Si cambia el ancho de pantalla (resize o rotar el celular), el texto
-    // puede envolver distinto y cambiar de alto — sin esto, la altura del
-    // panel activo quedaba obsoleta hasta el próximo reload.
-    window.addEventListener('resize', updateRail);
-
-    // Swipe táctil (mobile)
-    var railTouchStartX = 0;
-    var railTouchDeltaX = 0;
-
-    railTrack.addEventListener('touchstart', function (e) {
-      railTouchStartX = e.touches[0].clientX;
-      railTouchDeltaX = 0;
-    }, { passive: true });
-
-    railTrack.addEventListener('touchmove', function (e) {
-      railTouchDeltaX = e.touches[0].clientX - railTouchStartX;
-    }, { passive: true });
-
-    railTrack.addEventListener('touchend', function () {
-      var SWIPE_THRESHOLD = 40;
-      if (railTouchDeltaX > SWIPE_THRESHOLD) {
-        goToRail(railCurrent - 1);
-      } else if (railTouchDeltaX < -SWIPE_THRESHOLD) {
-        goToRail(railCurrent + 1);
-      }
-    });
-
-    // Sin JS esto ya se ve apilado y legible (ver CSS); con reduced-motion
-    // revelamos todo de una para no depender de la navegación del rail.
-    if (prefersReducedMotion) {
-      railSlides.forEach(function (_, index) {
-        revealRailSlide(index);
-      });
-    }
-
-    updateRail();
   }
 
 })();

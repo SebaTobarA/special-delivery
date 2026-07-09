@@ -81,14 +81,19 @@
 }
 
 /* Scroll-reveal: oculto hasta que script.js le agrega .is-visible al entrar en viewport.
-   El <noscript> en el <head> asegura que sin JS el contenido siga siendo visible. */
-.reveal {
+   El <noscript> en el <head> asegura que sin JS el contenido siga siendo visible.
+   .reveal-scroll es la variante reversible: se oculta de nuevo si se sale
+   del viewport (usada en "Acerca de la Guild"), en vez de revelarse una
+   sola vez y quedar fija como .reveal. */
+.reveal,
+.reveal-scroll {
   opacity: 0;
   transform: translateY(24px);
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-.reveal.is-visible {
+.reveal.is-visible,
+.reveal-scroll.is-visible {
   opacity: 1;
   transform: none;
 }
@@ -722,50 +727,32 @@ ul {
   z-index: 1;
 }
 
-/* ---------- Acerca de la Guild: rail de 2 paneles ----------
-   Mismo mecanismo que el carrusel de videos (barra de progreso + flechas +
-   swipe, ver script.js), sin scroll-jacking de la página: mucho más
-   robusto entre navegadores/dispositivos. Cada panel: título a la
-   izquierda, contenido en una tarjeta a la derecha. */
-.rail {
-  position: relative;
-  margin-top: 1.5rem;
-}
-
-.rail-track {
-  display: flex;
-  /* align-items: flex-start (no el default "stretch") para que cada panel
-     tenga SU propia altura de contenido en vez de estirarse para igualar
-     al panel más alto — script.js ajusta la altura visible del track al
-     panel activo, así no queda un espacio vacío enorme debajo del panel
-     más corto (que hacía parecer que la sección "terminaba" ahí). */
-  align-items: flex-start;
-  overflow: hidden;
-  transition: height 0.35s ease;
-}
-
-.rail-slide {
-  flex: 0 0 100%;
+/* ---------- Acerca de la Guild: bloques de historia y liderazgo ----------
+   Apilados en flujo normal del documento (sin scroll-jacking, sin sticky):
+   cada uno revela su contenido con scroll-reveal reversible a medida que
+   entra/sale del viewport (.reveal-scroll, ver script.js). Título a la
+   izquierda, contenido en una tarjeta a la derecha en pantallas grandes. */
+.info-block {
   display: grid;
   grid-template-columns: 1fr;
   align-items: center;
-  /* Sin esto, cuando un panel es más bajo que el más alto del rail (que
-     fuerza la altura de todos, ver .rail-track), el espacio sobrante se
-     reparte como gap extra en vez de quedar simplemente debajo. */
-  align-content: start;
   gap: 1.5rem;
   padding: 0.5rem 0.25rem;
 }
 
-.rail-col-title {
+.info-block + .info-block {
+  margin-top: 3rem;
+}
+
+.info-block-title {
   position: relative;
 }
 
-.rail-title-accent {
+.info-block-accent {
   display: none;
 }
 
-.rail-card {
+.info-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
@@ -788,16 +775,17 @@ ul {
   text-align: left;
 }
 
-.rail-card .section-text {
+.info-card .section-text {
   transition-delay: 0.15s;
 }
 
-/* Variante de .reveal: entra deslizándose desde la derecha en vez de subir */
-.reveal.reveal-slide-left {
+/* Variante de .reveal / .reveal-scroll: entra deslizándose desde la
+   derecha en vez de subir */
+.reveal-slide-left {
   transform: translateX(70px);
 }
 
-.reveal.reveal-slide-left.is-visible {
+.reveal-slide-left.is-visible {
   transform: none;
 }
 
@@ -808,13 +796,13 @@ ul {
   gap: 1.2rem;
 }
 
-/* Efecto cascada: el título del panel aparece primero, después cada cargo
-   uno después del otro (ver data-reveal-on-rail en script.js) */
-.org-tier.reveal:nth-child(1) { transition-delay: 0.15s; }
-.org-tier.reveal:nth-child(2) { transition-delay: 0.25s; }
-.org-tier.reveal:nth-child(3) { transition-delay: 0.35s; }
-.org-tier.reveal:nth-child(4) { transition-delay: 0.45s; }
-.org-tier.reveal:nth-child(5) { transition-delay: 0.55s; }
+/* Efecto cascada: el título del bloque aparece primero, después cada cargo
+   uno después del otro */
+.org-tier.reveal-scroll:nth-child(1) { transition-delay: 0.15s; }
+.org-tier.reveal-scroll:nth-child(2) { transition-delay: 0.25s; }
+.org-tier.reveal-scroll:nth-child(3) { transition-delay: 0.35s; }
+.org-tier.reveal-scroll:nth-child(4) { transition-delay: 0.45s; }
+.org-tier.reveal-scroll:nth-child(5) { transition-delay: 0.55s; }
 
 .org-tier {
   display: flex;
@@ -1040,13 +1028,13 @@ ul {
     align-items: center;
   }
 
-  .rail-slide {
+  .info-block {
     grid-template-columns: 0.8fr 1.2fr;
     gap: 2.5rem;
     padding: 1rem;
   }
 
-  .rail-title-accent {
+  .info-block-accent {
     display: block;
     position: absolute;
     top: 0;
