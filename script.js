@@ -366,6 +366,11 @@
 
     function updateRail() {
       railTrack.style.transform = 'translateX(-' + (railCurrent * 100) + '%)';
+      // El track toma la altura del panel activo (no la del más alto de
+      // todos) para no dejar un espacio vacío enorme debajo del panel más
+      // corto — eso hacía parecer que la sección terminaba ahí y las
+      // flechas, al fondo de ese espacio, pasaban desapercibidas.
+      railTrack.style.height = railSlides[railCurrent].offsetHeight + 'px';
       var max = railSlides.length - 1;
       railProgressBar.style.width = (max > 0 ? (railCurrent / max) * 100 : 0) + '%';
       revealRailSlide(railCurrent);
@@ -386,6 +391,11 @@
 
     railTrack.style.transition = 'transform 0.4s ease';
     railTrack.style.willChange = 'transform';
+
+    // Si cambia el ancho de pantalla (resize o rotar el celular), el texto
+    // puede envolver distinto y cambiar de alto — sin esto, la altura del
+    // panel activo quedaba obsoleta hasta el próximo reload.
+    window.addEventListener('resize', updateRail);
 
     // Swipe táctil (mobile)
     var railTouchStartX = 0;
