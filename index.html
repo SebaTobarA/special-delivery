@@ -76,86 +76,47 @@
             <span class="discord-online-count" data-discord-online-count></span>
           </span>
         </a>
-
-        <!-- ===== Carrusel de videos de YouTube (facade lazy-load) ===== -->
-        <div class="carousel" id="videoCarousel" aria-roledescription="carrusel" aria-label="Videos destacados de la guild">
-          <div class="carousel-track" id="carouselTrack">
-
-            <!-- Slot 1 -->
-            <div class="carousel-slide" data-video-id="dQw4w9WgXcQ">
-              <div class="yt-facade" data-video-id="dQw4w9WgXcQ" role="button" tabindex="0" aria-label="Reproducir video: Placeholder 1">
-                <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg" alt="Miniatura video placeholder 1" loading="lazy" class="yt-thumb">
-                <span class="yt-play" aria-hidden="true">
-                  <svg viewBox="0 0 68 48" width="68" height="48"><path d="M66.5 7.7c-.8-3-2.9-5.3-5.7-6.1C55.8 0 34 0 34 0S12.2 0 7.2 1.6C4.4 2.4 2.3 4.7 1.5 7.7 0 13 0 24 0 24s0 11 1.5 16.3c.8 3 2.9 5.3 5.7 6.1C12.2 48 34 48 34 48s21.8 0 26.8-1.6c2.8-.8 4.9-3.1 5.7-6.1C68 35 68 24 68 24s0-11-1.5-16.3z" fill="#4dd8e8" opacity="0.9"/><path d="M45 24 27 14v20z" fill="#0a0a0d"/></svg>
-                </span>
-              </div>
-            </div>
-
-            <!-- Slot 2 -->
-            <div class="carousel-slide" data-video-id="dQw4w9WgXcQ">
-              <div class="yt-facade" data-video-id="dQw4w9WgXcQ" role="button" tabindex="0" aria-label="Reproducir video: Placeholder 2">
-                <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg" alt="Miniatura video placeholder 2" loading="lazy" class="yt-thumb">
-                <span class="yt-play" aria-hidden="true">
-                  <svg viewBox="0 0 68 48" width="68" height="48"><path d="M66.5 7.7c-.8-3-2.9-5.3-5.7-6.1C55.8 0 34 0 34 0S12.2 0 7.2 1.6C4.4 2.4 2.3 4.7 1.5 7.7 0 13 0 24 0 24s0 11 1.5 16.3c.8 3 2.9 5.3 5.7 6.1C12.2 48 34 48 34 48s21.8 0 26.8-1.6c2.8-.8 4.9-3.1 5.7-6.1C68 35 68 24 68 24s0-11-1.5-16.3z" fill="#4dd8e8" opacity="0.9"/><path d="M45 24 27 14v20z" fill="#0a0a0d"/></svg>
-                </span>
-              </div>
-            </div>
-
-            <!-- Slot 3 -->
-            <div class="carousel-slide" data-video-id="dQw4w9WgXcQ">
-              <div class="yt-facade" data-video-id="dQw4w9WgXcQ" role="button" tabindex="0" aria-label="Reproducir video: Placeholder 3">
-                <img src="https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg" alt="Miniatura video placeholder 3" loading="lazy" class="yt-thumb">
-                <span class="yt-play" aria-hidden="true">
-                  <svg viewBox="0 0 68 48" width="68" height="48"><path d="M66.5 7.7c-.8-3-2.9-5.3-5.7-6.1C55.8 0 34 0 34 0S12.2 0 7.2 1.6C4.4 2.4 2.3 4.7 1.5 7.7 0 13 0 24 0 24s0 11 1.5 16.3c.8 3 2.9 5.3 5.7 6.1C12.2 48 34 48 34 48s21.8 0 26.8-1.6c2.8-.8 4.9-3.1 5.7-6.1C68 35 68 24 68 24s0-11-1.5-16.3z" fill="#4dd8e8" opacity="0.9"/><path d="M45 24 27 14v20z" fill="#0a0a0d"/></svg>
-                </span>
-              </div>
-            </div>
-
-          </div>
-
-          <button class="carousel-arrow carousel-arrow-prev" id="carouselPrev" aria-label="Video anterior">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-          </button>
-          <button class="carousel-arrow carousel-arrow-next" id="carouselNext" aria-label="Video siguiente">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
-          </button>
-
-          <div class="carousel-dots" id="carouselDots" role="tablist" aria-label="Seleccionar video"></div>
-        </div>
       </div>
     </section>
 
     <!-- ============ ACERCA DE LA GUILD ============ -->
-    <section id="historia" class="section">
+    <section id="historia" class="section section-particles-host">
+      <!-- Partículas decorativas de fondo, generadas por script.js. Puramente
+           visuales (aria-hidden) y desactivadas con prefers-reduced-motion. -->
+      <div class="particles" id="aboutParticles" aria-hidden="true"></div>
+
       <div class="section-inner">
         <h2 class="section-title reveal">Acerca de la Guild</h2>
       </div>
 
-      <!-- Scroll horizontal tipo carrusel: al bajar por esta zona, los paneles se
-           deslizan hacia la izquierda (efecto "hacia la derecha" del contenido).
-           Se activa vía JS (script.js) solo si hay soporte y sin prefers-reduced-motion;
-           sin JS o con "menos movimiento" esto se ve como bloques apilados normales. -->
+      <!-- Scroll horizontal tipo carrusel con relato por pasos ("beats"): cada
+           elemento con [data-beat] aparece uno a uno a medida que se hace scroll,
+           y entre paneles el contenido se desliza horizontalmente. Se activa vía
+           JS (script.js) solo si hay soporte y sin prefers-reduced-motion; sin JS
+           o con "menos movimiento" esto se ve como bloques apilados normales, ya
+           visibles de entrada. -->
       <div class="hscroll" id="hscrollHistoria">
         <div class="hscroll-sticky">
           <div class="hscroll-track" id="hscrollTrack">
 
-            <!-- Panel 1: historia -->
+            <!-- Panel 1: cómo nace la guild -->
             <div class="hscroll-panel">
-              <div class="hscroll-panel-inner reveal">
-                <p class="hscroll-text">En el 2008 junto a nuestros amigos fundamos Special Delivery para jugar en Ragnarok Online, con el tiempo participamos en distintos servidores hasta que ahora hemos decidido participar en la versión de Ragnarok Online Origin Classic Americas.</p>
+              <div class="hscroll-panel-inner">
+                <h3 class="hscroll-subtitle" data-beat data-beat-effect="slide-left">Cómo nace Special Delivery</h3>
+                <p class="hscroll-text" data-beat data-beat-effect="fade">En el 2008 junto a nuestros amigos fundamos Special Delivery para jugar en Ragnarok Online, con el tiempo participamos en distintos servidores hasta que ahora hemos decidido participar en la versión de Ragnarok Online Origin Classic Americas.</p>
               </div>
             </div>
 
             <!-- Panel 2: liderazgo -->
             <div class="hscroll-panel">
-              <div class="hscroll-panel-inner reveal">
-                <h3 class="leadership-title">Liderazgo</h3>
+              <div class="hscroll-panel-inner">
+                <h3 class="leadership-title" data-beat data-beat-effect="slide-left">Liderazgo</h3>
 
                 <div class="org-chart">
                   <div class="org-tier org-tier-lead">
-                    <p class="org-role">Guild Leader</p>
+                    <p class="org-role" data-beat data-beat-effect="fade">Guild Leader</p>
                     <div class="org-people">
-                      <div class="org-person">
+                      <div class="org-person" data-beat data-beat-effect="fade">
                         <span class="org-avatar" aria-hidden="true">H</span>
                         <span class="org-name">Hunteriwi</span>
                       </div>
@@ -163,17 +124,17 @@
                   </div>
 
                   <div class="org-tier">
-                    <p class="org-role">Vice Guild Leader</p>
+                    <p class="org-role" data-beat data-beat-effect="fade">Vice Guild Leader</p>
                     <div class="org-people">
-                      <div class="org-person">
+                      <div class="org-person" data-beat data-beat-effect="fade">
                         <span class="org-avatar" aria-hidden="true">A</span>
                         <span class="org-name">Ahead</span>
                       </div>
-                      <div class="org-person">
+                      <div class="org-person" data-beat data-beat-effect="fade">
                         <span class="org-avatar" aria-hidden="true">G</span>
                         <span class="org-name">Gotic</span>
                       </div>
-                      <div class="org-person">
+                      <div class="org-person" data-beat data-beat-effect="fade">
                         <span class="org-avatar" aria-hidden="true">S</span>
                         <span class="org-name">Styan</span>
                       </div>
@@ -181,9 +142,9 @@
                   </div>
 
                   <div class="org-tier">
-                    <p class="org-role">Comandante</p>
+                    <p class="org-role" data-beat data-beat-effect="fade">Comandante</p>
                     <div class="org-people">
-                      <div class="org-person">
+                      <div class="org-person" data-beat data-beat-effect="fade">
                         <span class="org-avatar" aria-hidden="true">P</span>
                         <span class="org-name">Por definir</span>
                       </div>
@@ -191,21 +152,21 @@
                   </div>
 
                   <div class="org-tier">
-                    <p class="org-role">Oficiales</p>
+                    <p class="org-role" data-beat data-beat-effect="fade">Oficiales</p>
                     <div class="org-people">
-                      <div class="org-person">
+                      <div class="org-person" data-beat data-beat-effect="fade">
                         <span class="org-avatar" aria-hidden="true">P</span>
                         <span class="org-name">Pendiente</span>
                       </div>
-                      <div class="org-person">
+                      <div class="org-person" data-beat data-beat-effect="fade">
                         <span class="org-avatar" aria-hidden="true">P</span>
                         <span class="org-name">Pendiente</span>
                       </div>
-                      <div class="org-person">
+                      <div class="org-person" data-beat data-beat-effect="fade">
                         <span class="org-avatar" aria-hidden="true">P</span>
                         <span class="org-name">Pendiente</span>
                       </div>
-                      <div class="org-person">
+                      <div class="org-person" data-beat data-beat-effect="fade">
                         <span class="org-avatar" aria-hidden="true">P</span>
                         <span class="org-name">Pendiente</span>
                       </div>
@@ -213,9 +174,9 @@
                   </div>
 
                   <div class="org-tier">
-                    <p class="org-role">Estrella del Carisma</p>
+                    <p class="org-role" data-beat data-beat-effect="fade">Estrella del Carisma</p>
                     <div class="org-people">
-                      <div class="org-person">
+                      <div class="org-person" data-beat data-beat-effect="fade">
                         <span class="org-avatar" aria-hidden="true">L</span>
                         <span class="org-name">Lulupe</span>
                       </div>
@@ -229,11 +190,44 @@
         </div>
       </div>
 
+      <!-- Videos + redes sociales -->
       <div class="section-inner">
-        <div class="gallery">
-          <img src="assets/screenshot-placeholder-1.svg" alt="Captura de pantalla placeholder 1 del juego" loading="lazy" class="gallery-img reveal">
-          <img src="assets/screenshot-placeholder-2.svg" alt="Captura de pantalla placeholder 2 del juego" loading="lazy" class="gallery-img reveal">
-          <img src="assets/screenshot-placeholder-3.svg" alt="Captura de pantalla placeholder 3 del juego" loading="lazy" class="gallery-img reveal">
+        <h3 class="videos-title reveal">Mira nuestros videos y síguenos en redes</h3>
+
+        <div class="social-links reveal">
+          <a href="https://www.youtube.com/@SpecialDeliveryRO" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="YouTube de Special Delivery">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path fill="currentColor" d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z"/>
+            </svg>
+          </a>
+          <!-- TODO: reemplazar # por el link real de Twitch cuando lo tengan -->
+          <a href="#" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Twitch de Special Delivery">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path fill="currentColor" d="M4.3 2 2 7v13h5v2h3l2-2h4l4-4V2H4.3ZM18 15l-2 2h-4l-2 2v-2H6V4h12v11Z"/>
+              <path fill="currentColor" d="M15 7h2v5h-2zM10 7h2v5h-2z"/>
+            </svg>
+          </a>
+          <!-- TODO: reemplazar # por el link real de Instagram cuando lo tengan -->
+          <a href="#" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram de Special Delivery">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path fill="currentColor" d="M12 2c-2.7 0-3.05.01-4.12.06-1.06.05-1.79.22-2.43.47-.66.26-1.22.6-1.77 1.16-.56.55-.9 1.11-1.16 1.77-.25.64-.42 1.37-.47 2.43C2 8.95 2 9.3 2 12s.01 3.05.06 4.12c.05 1.06.22 1.79.47 2.43.26.66.6 1.22 1.16 1.77.55.56 1.11.9 1.77 1.16.64.25 1.37.42 2.43.47C8.95 22 9.3 22 12 22s3.05-.01 4.12-.06c1.06-.05 1.79-.22 2.43-.47.66-.26 1.22-.6 1.77-1.16.56-.55.9-1.11 1.16-1.77.25-.64.42-1.37.47-2.43.05-1.07.06-1.42.06-4.12s-.01-3.05-.06-4.12c-.05-1.06-.22-1.79-.47-2.43a4.9 4.9 0 0 0-1.16-1.77 4.9 4.9 0 0 0-1.77-1.16c-.64-.25-1.37-.42-2.43-.47C15.05 2 14.7 2 12 2Zm0 1.8c2.67 0 2.98.01 4.04.06.97.04 1.5.2 1.85.34.47.18.8.4 1.15.75.35.35.57.68.75 1.15.14.35.3.88.34 1.85.05 1.06.06 1.37.06 4.04s-.01 2.98-.06 4.04c-.04.97-.2 1.5-.34 1.85a3.1 3.1 0 0 1-.75 1.15c-.35.35-.68.57-1.15.75-.35.14-.88.3-1.85.34-1.06.05-1.37.06-4.04.06s-2.98-.01-4.04-.06c-.97-.04-1.5-.2-1.85-.34a3.1 3.1 0 0 1-1.15-.75 3.1 3.1 0 0 1-.75-1.15c-.14-.35-.3-.88-.34-1.85C3.81 14.98 3.8 14.67 3.8 12s.01-2.98.06-4.04c.04-.97.2-1.5.34-1.85.18-.47.4-.8.75-1.15.35-.35.68-.57 1.15-.75.35-.14.88-.3 1.85-.34C9.02 3.81 9.33 3.8 12 3.8Zm0 3.2a5 5 0 1 0 0 10 5 5 0 0 0 0-10Zm0 8.2a3.2 3.2 0 1 1 0-6.4 3.2 3.2 0 0 1 0 6.4Zm5.2-8.4a1.17 1.17 0 1 1-2.34 0 1.17 1.17 0 0 1 2.34 0Z"/>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Carrusel de videos: se completa por JS (script.js) desde la lista
+             VIDEOS (hasta 10). Ver script.js para agregar/editar videos. -->
+        <div class="carousel reveal" id="videoCarousel" aria-roledescription="carrusel" aria-label="Videos de la guild">
+          <div class="carousel-track" id="carouselTrack"></div>
+
+          <button class="carousel-arrow carousel-arrow-prev" id="carouselPrev" aria-label="Video anterior">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+          </button>
+          <button class="carousel-arrow carousel-arrow-next" id="carouselNext" aria-label="Video siguiente">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+          </button>
+
+          <div class="carousel-dots" id="carouselDots" role="tablist" aria-label="Seleccionar video"></div>
         </div>
       </div>
     </section>

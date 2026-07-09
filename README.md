@@ -10,10 +10,7 @@ Sitio estático de una sola página (HTML + CSS + JS vanilla, sin frameworks ni 
 ├── styles.css
 ├── script.js
 ├── assets/
-│   ├── mascota-fantasma-icono.svg   (logo + favicon — reemplazar por el arte final)
-│   ├── screenshot-placeholder-1.svg (placeholder, reemplazar por captura real .webp)
-│   ├── screenshot-placeholder-2.svg
-│   └── screenshot-placeholder-3.svg
+│   └── mascota-fantasma-icono.svg   (logo + favicon — reemplazar por el arte final)
 └── README.md
 ```
 
@@ -35,14 +32,18 @@ Luego abrí `http://localhost:8080` en el navegador.
 
 ## Contenido a completar
 
-Buscá estos marcadores en `index.html` y reemplazalos con tu contenido real:
-
-- `[TAGLINE DE LA GUILD]` — frase corta debajo del logo en el Hero.
-- IDs de video del carrusel (`data-video-id="..."` y las URLs de miniatura
-  `https://i.ytimg.com/vi/VIDEO_ID/hqdefault.jpg`) — reemplazar por tus videos reales de YouTube.
-- Textos `[Lorem ipsum / completar con historia real]` en la sección **Historia**.
-- Imágenes `assets/screenshot-placeholder-*.svg` — reemplazar por capturas reales
-  (idealmente `.webp`, actualizando el `src` en `index.html`).
+- **Videos del carrusel**: se generan desde el arreglo `VIDEOS` al inicio de la
+  sección 2 en `script.js` (buscá `var VIDEOS = [`). Cada objeto necesita
+  `videoId` (lo que va después de `v=` en la URL de YouTube), `title`,
+  `channel` y `date` (formato `"AAAA-MM"`). Podés tener hasta 10.
+- **Redes sociales**: en `index.html`, dentro de `.social-links`, los links de
+  Twitch e Instagram están como `href="#"` (marcados con `<!-- TODO -->`) — 
+  reemplazalos por las URLs reales cuando las tengan. El de YouTube ya apunta
+  a `youtube.com/@SpecialDeliveryRO`.
+- **Liderazgo**: en la sección "Acerca de la Guild" quedan pendientes el
+  Comandante ("Por definir") y los 4 Oficiales ("Pendiente") — buscá esos
+  textos en `index.html` dentro de `.org-chart` y reemplazalos por los
+  nombres reales cuando estén definidos.
 - Textos `[placeholder]` en la sección **Reclutamiento** (requisitos, descripción).
 
 ## Reemplazar el logo del fantasma
