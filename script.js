@@ -8,6 +8,7 @@
    5) Scroll-reveal de secciones (IntersectionObserver)
    6) Contador de miembros conectados en Discord (API pública de invitaciones)
    7) Partículas de fondo decorativas en "Acerca de la Guild"
+   8) Presentación de 2 láminas con crossfade en "Acerca de la Guild"
    ========================================================= */
 
 (function () {
@@ -362,6 +363,60 @@
         particle.style.background = 'var(--color-secondary)';
       }
       particlesContainer.appendChild(particle);
+    }
+  }
+
+  /* ---------- 8) Presentación de 2 láminas con crossfade ---------- */
+  // Por defecto (sin JS, o con prefers-reduced-motion) las 2 láminas ya se
+  // ven apiladas y 100% legibles (ver CSS). Solo si hay soporte y sin
+  // "menos movimiento" se fija el área (.deck-sticky, con 100dvh — no
+  // 100vh, para no saltar cuando la barra de direcciones de iOS
+  // aparece/desaparece al scrollear) y se cruzan en fundido según el
+  // progreso del scroll dentro de .deck.
+  var deck = document.getElementById('aboutDeck');
+
+  if (deck && !prefersReducedMotion) {
+    var deckSlides = Array.prototype.slice.call(deck.querySelectorAll('.deck-slide'));
+
+    if (deckSlides.length > 1) {
+      deck.classList.add('deck-enabled');
+
+      var deckTicking = false;
+
+      function updateDeck() {
+        var rect = deck.getBoundingClientRect();
+        var scrollable = deck.offsetHeight - window.innerHeight;
+        var progress = scrollable > 0 ? (-rect.top) / scrollable : 0;
+        progress = Math.max(0, Math.min(1, progress));
+
+        // La transición (fundido cruzado) ocurre en el 20% central del
+        // recorrido; antes de eso la lámina 1 está sola, después la 2.
+        var fade = (progress - 0.4) / 0.2;
+        fade = Math.max(0, Math.min(1, fade));
+
+        deckSlides[0].style.opacity = String(1 - fade);
+        deckSlides[1].style.opacity = String(fade);
+        deckSlides[0].setAttribute('aria-hidden', fade > 0.5 ? 'true' : 'false');
+        deckSlides[1].setAttribute('aria-hidden', fade <= 0.5 ? 'true' : 'false');
+
+        // El organigrama de la lámina 2 se revela (en cascada, ver CSS) recién
+        // cuando esa lámina domina, y vuelve a ocultarse si se retrocede.
+        deckSlides[1].querySelectorAll('.reveal-scroll').forEach(function (el) {
+          el.classList.toggle('is-visible', fade > 0.5);
+        });
+
+        deckTicking = false;
+      }
+
+      window.addEventListener('scroll', function () {
+        if (!deckTicking) {
+          window.requestAnimationFrame(updateDeck);
+          deckTicking = true;
+        }
+      }, { passive: true });
+
+      window.addEventListener('resize', updateDeck);
+      updateDeck();
     }
   }
 

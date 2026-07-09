@@ -727,21 +727,56 @@ ul {
   z-index: 1;
 }
 
-/* ---------- Acerca de la Guild: bloques de historia y liderazgo ----------
-   Apilados en flujo normal del documento (sin scroll-jacking, sin sticky):
-   cada uno revela su contenido con scroll-reveal reversible a medida que
-   entra/sale del viewport (.reveal-scroll, ver script.js). Título a la
-   izquierda, contenido en una tarjeta a la derecha en pantallas grandes. */
+/* ---------- Acerca de la Guild: "presentación" de 2 láminas ----------
+   Por defecto (sin JS, o con prefers-reduced-motion) las 2 láminas están
+   apiladas en flujo normal, siempre visibles — nada de esto es necesario
+   para leer el contenido. Solo cuando corresponde, script.js agrega
+   .deck-enabled y fija (.deck-sticky) el área mientras hace un crossfade
+   entre láminas según el progreso del scroll dentro de .deck. */
+.deck-slide {
+  padding: 2rem 0;
+}
+
+.deck-slide + .deck-slide {
+  margin-top: 2rem;
+}
+
+.deck-enabled.deck {
+  position: relative;
+  height: 220vh;
+  height: 220dvh;
+}
+
+.deck-enabled .deck-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: block;
+}
+
+.deck-enabled .deck-slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  margin-top: 0;
+  padding: 0;
+  opacity: 0;
+}
+
+.deck-enabled .deck-slide .section-inner {
+  width: 100%;
+}
+
+/* ---------- Bloque título + tarjeta (dentro de cada lámina) ---------- */
 .info-block {
   display: grid;
   grid-template-columns: 1fr;
   align-items: center;
   gap: 1.5rem;
   padding: 0.5rem 0.25rem;
-}
-
-.info-block + .info-block {
-  margin-top: 3rem;
 }
 
 .info-block-title {
@@ -773,20 +808,6 @@ ul {
   line-height: 1.7;
   color: var(--color-text);
   text-align: left;
-}
-
-.info-card .section-text {
-  transition-delay: 0.15s;
-}
-
-/* Variante de .reveal / .reveal-scroll: entra deslizándose desde la
-   derecha en vez de subir */
-.reveal-slide-left {
-  transform: translateX(70px);
-}
-
-.reveal-slide-left.is-visible {
-  transform: none;
 }
 
 /* ---------- Liderazgo: organigrama ---------- */

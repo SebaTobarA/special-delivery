@@ -80,11 +80,15 @@
     </section>
 
     <!-- ============ ACERCA DE LA GUILD ============ -->
-    <!-- "Etapa" 2: ocupa como mínimo una pantalla completa (min-height, no
-         height fijo) para no romper el layout si el contenido no entra en
-         pantallas chicas — scroll normal del navegador, sin scroll-jacking
-         (esto reemplaza el carrusel horizontal anterior, que daba problemas
-         de visualización en iOS/iPad por la combinación sticky + vh). -->
+    <!-- "Etapa" 2: título fijo arriba + una "presentación" de 2 láminas
+         (historia / liderazgo) que se van cruzando en fundido (fade) a
+         medida que se hace scroll, como diapositivas — la lámina 1 se
+         desvanece justo cuando aparece la 2, ambas en el mismo lugar de
+         pantalla. Se activa vía JS (.deck-enabled) solo con soporte y sin
+         prefers-reduced-motion; sin eso, se ven las 2 apiladas normalmente,
+         siempre visibles. Usa 100dvh (no 100vh) para el área fija, que es
+         la unidad pensada para evitar los saltos de altura en iOS Safari
+         cuando la barra de direcciones aparece/desaparece al scrollear. -->
     <section id="historia" class="section section-fullscreen section-particles-host">
       <!-- Partículas decorativas de fondo, generadas por script.js. Puramente
            visuales (aria-hidden) y desactivadas con prefers-reduced-motion. -->
@@ -92,105 +96,115 @@
 
       <div class="section-inner">
         <h2 class="section-title reveal">Acerca de la Guild</h2>
+      </div>
 
-        <!-- Scroll-reveal reversible (no scroll-jacking, no sticky): cada
-             bloque aparece al bajar y vuelve a ocultarse si se sube de
-             nuevo (ver .reveal-scroll en script.js/styles.css). Sin
-             botones ni swipe — la navegación es el scroll normal de la
-             página. Título a la izquierda, contenido en una tarjeta a la
-             derecha en pantallas grandes; apilado en mobile. -->
-        <div class="info-block">
-          <div class="info-block-title">
-            <h3 class="section-subtitle reveal-scroll reveal-slide-left">Cómo nace Special Delivery</h3>
-            <span class="info-block-accent" aria-hidden="true"></span>
-          </div>
-          <div class="info-block-content">
-            <div class="info-card">
-              <p class="section-text reveal-scroll">En el 2008 junto a nuestros amigos fundamos Special Delivery para jugar en Ragnarok Online, con el tiempo participamos en distintos servidores hasta que ahora hemos decidido participar en la versión de Ragnarok Online Origin Classic Americas.</p>
+      <div class="deck" id="aboutDeck">
+        <div class="deck-sticky">
+
+          <!-- Lámina 1: cómo nace la guild -->
+          <div class="deck-slide">
+            <div class="section-inner">
+              <div class="info-block">
+                <div class="info-block-title">
+                  <h3 class="section-subtitle">Cómo nace Special Delivery</h3>
+                  <span class="info-block-accent" aria-hidden="true"></span>
+                </div>
+                <div class="info-block-content">
+                  <div class="info-card">
+                    <p class="section-text">En el 2008 junto a nuestros amigos fundamos Special Delivery para jugar en Ragnarok Online, con el tiempo participamos en distintos servidores hasta que ahora hemos decidido participar en la versión de Ragnarok Online Origin Classic Americas.</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="info-block">
-          <div class="info-block-title">
-            <h3 class="section-subtitle reveal-scroll reveal-slide-left">Liderazgo</h3>
-            <span class="info-block-accent" aria-hidden="true"></span>
-          </div>
-          <div class="info-block-content">
-            <div class="info-card">
-              <div class="org-chart">
-                <div class="org-tier org-tier-lead reveal-scroll">
-                  <p class="org-role">Guild Leader</p>
-                  <div class="org-people">
-                    <div class="org-person">
-                      <span class="org-avatar" aria-hidden="true">H</span>
-                      <span class="org-name">Hunteriwi</span>
-                    </div>
-                  </div>
+          <!-- Lámina 2: liderazgo -->
+          <div class="deck-slide">
+            <div class="section-inner">
+              <div class="info-block">
+                <div class="info-block-title">
+                  <h3 class="section-subtitle">Liderazgo</h3>
+                  <span class="info-block-accent" aria-hidden="true"></span>
                 </div>
+                <div class="info-block-content">
+                  <div class="info-card">
+                    <div class="org-chart">
+                      <div class="org-tier org-tier-lead reveal-scroll">
+                        <p class="org-role">Guild Leader</p>
+                        <div class="org-people">
+                          <div class="org-person">
+                            <span class="org-avatar" aria-hidden="true">H</span>
+                            <span class="org-name">Hunteriwi</span>
+                          </div>
+                        </div>
+                      </div>
 
-                <div class="org-tier reveal-scroll">
-                  <p class="org-role">Vice Guild Leader</p>
-                  <div class="org-people">
-                    <div class="org-person">
-                      <span class="org-avatar" aria-hidden="true">A</span>
-                      <span class="org-name">Ahead</span>
-                    </div>
-                    <div class="org-person">
-                      <span class="org-avatar" aria-hidden="true">G</span>
-                      <span class="org-name">Gotic</span>
-                    </div>
-                    <div class="org-person">
-                      <span class="org-avatar" aria-hidden="true">S</span>
-                      <span class="org-name">Styan</span>
-                    </div>
-                  </div>
-                </div>
+                      <div class="org-tier reveal-scroll">
+                        <p class="org-role">Vice Guild Leader</p>
+                        <div class="org-people">
+                          <div class="org-person">
+                            <span class="org-avatar" aria-hidden="true">A</span>
+                            <span class="org-name">Ahead</span>
+                          </div>
+                          <div class="org-person">
+                            <span class="org-avatar" aria-hidden="true">G</span>
+                            <span class="org-name">Gotic</span>
+                          </div>
+                          <div class="org-person">
+                            <span class="org-avatar" aria-hidden="true">S</span>
+                            <span class="org-name">Styan</span>
+                          </div>
+                        </div>
+                      </div>
 
-                <div class="org-tier reveal-scroll">
-                  <p class="org-role">Comandante</p>
-                  <div class="org-people">
-                    <div class="org-person">
-                      <span class="org-avatar" aria-hidden="true">P</span>
-                      <span class="org-name">Por definir</span>
-                    </div>
-                  </div>
-                </div>
+                      <div class="org-tier reveal-scroll">
+                        <p class="org-role">Comandante</p>
+                        <div class="org-people">
+                          <div class="org-person">
+                            <span class="org-avatar" aria-hidden="true">P</span>
+                            <span class="org-name">Por definir</span>
+                          </div>
+                        </div>
+                      </div>
 
-                <div class="org-tier reveal-scroll">
-                  <p class="org-role">Oficiales</p>
-                  <div class="org-people">
-                    <div class="org-person">
-                      <span class="org-avatar" aria-hidden="true">P</span>
-                      <span class="org-name">Pendiente</span>
-                    </div>
-                    <div class="org-person">
-                      <span class="org-avatar" aria-hidden="true">P</span>
-                      <span class="org-name">Pendiente</span>
-                    </div>
-                    <div class="org-person">
-                      <span class="org-avatar" aria-hidden="true">P</span>
-                      <span class="org-name">Pendiente</span>
-                    </div>
-                    <div class="org-person">
-                      <span class="org-avatar" aria-hidden="true">P</span>
-                      <span class="org-name">Pendiente</span>
-                    </div>
-                  </div>
-                </div>
+                      <div class="org-tier reveal-scroll">
+                        <p class="org-role">Oficiales</p>
+                        <div class="org-people">
+                          <div class="org-person">
+                            <span class="org-avatar" aria-hidden="true">P</span>
+                            <span class="org-name">Pendiente</span>
+                          </div>
+                          <div class="org-person">
+                            <span class="org-avatar" aria-hidden="true">P</span>
+                            <span class="org-name">Pendiente</span>
+                          </div>
+                          <div class="org-person">
+                            <span class="org-avatar" aria-hidden="true">P</span>
+                            <span class="org-name">Pendiente</span>
+                          </div>
+                          <div class="org-person">
+                            <span class="org-avatar" aria-hidden="true">P</span>
+                            <span class="org-name">Pendiente</span>
+                          </div>
+                        </div>
+                      </div>
 
-                <div class="org-tier reveal-scroll">
-                  <p class="org-role">Estrella del Carisma</p>
-                  <div class="org-people">
-                    <div class="org-person">
-                      <span class="org-avatar" aria-hidden="true">L</span>
-                      <span class="org-name">Lulupe</span>
+                      <div class="org-tier reveal-scroll">
+                        <p class="org-role">Estrella del Carisma</p>
+                        <div class="org-people">
+                          <div class="org-person">
+                            <span class="org-avatar" aria-hidden="true">L</span>
+                            <span class="org-name">Lulupe</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
