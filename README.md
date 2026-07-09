@@ -35,7 +35,8 @@ Luego abrí `http://localhost:8080` en el navegador.
 - **Videos del carrusel**: se generan desde el arreglo `VIDEOS` al inicio de la
   sección 2 en `script.js` (buscá `var VIDEOS = [`). Cada objeto necesita
   `videoId` (lo que va después de `v=` en la URL de YouTube), `title`,
-  `channel` y `date` (formato `"AAAA-MM"`). Podés tener hasta 10.
+  `channel` y `date` (formato `"AAAA-MM-DD"`). Podés tener hasta 10; el orden
+  en la lista es el orden en que se muestran (no se ordenan solos).
 - **Redes sociales**: en `index.html`, dentro de `.social-links`, los links de
   Twitch e Instagram están como `href="#"` (marcados con `<!-- TODO -->`) — 
   reemplazalos por las URLs reales cuando las tengan. El de YouTube ya apunta

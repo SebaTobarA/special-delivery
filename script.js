@@ -37,23 +37,25 @@
   }
 
   /* ---------- 2) Carrusel de videos ---------- */
-  // Lista editable de videos (máximo 10). Para sumar uno nuevo, agregá un
-  // objeto con el ID del video de YouTube (lo que va después de "v=" en la
-  // URL), el título, el nombre del canal y el mes de publicación ("AAAA-MM").
-  // TODO: reemplazar por los videos reales de
-  // https://www.youtube.com/@SpecialDeliveryRO y https://www.youtube.com/@StyanSnow
+  // Lista editable de videos (máximo 10, se muestran varios a la vez con
+  // scroll horizontal). Para sumar uno nuevo, agregá un objeto con el ID del
+  // video de YouTube (lo que va después de "v=" en la URL), el título, el
+  // nombre del canal y la fecha de publicación ("AAAA-MM-DD"). Orden manual,
+  // de más nuevo a más viejo.
   var VIDEOS = [
-    { videoId: 'dQw4w9WgXcQ', title: '[Placeholder] Título del video 1', channel: 'Special Delivery - Ragnarok Online', date: '2026-01' },
-    { videoId: 'dQw4w9WgXcQ', title: '[Placeholder] Título del video 2', channel: 'Styan', date: '2025-12' },
-    { videoId: 'dQw4w9WgXcQ', title: '[Placeholder] Título del video 3', channel: 'Special Delivery - Ragnarok Online', date: '2025-11' }
+    { videoId: 'brGU04nxOlA', title: '¡APROVECHA ESTAS 3 PROMOCIONES ANTES DEL LANZAMIENTO! | Ragnarok Origin Classic AM', channel: 'Special Delivery - Ragnarok Online', date: '2026-07-09' },
+    { videoId: '1d5Z8felm1s', title: 'Guía Completa de PORING JOURNAL al 100% | Guía Ragnarok Origin Classic', channel: 'Styan', date: '2026-07-05' },
+    { videoId: 'q9LD6LHapbw', title: '¡TODAS las CLASES CONFIRMADAS para Ragnarok Origin Classic AM! ¿Cuál elegirás el 23 de julio?', channel: 'Special Delivery - Ragnarok Online', date: '2026-06-30' },
+    { videoId: 'mZZwp0vrMEg', title: 'Guía Completa de Funfair Isle | Ragnarok Origin Classic', channel: 'Styan', date: '2026-06-30' },
+    { videoId: 'hMIQZUIb5wk', title: '¡Ragnarok Origin Classic AM YA TIENE FECHA! ¿Ahora SÍ será Free to Play? | Todo lo que debes saber', channel: 'Special Delivery - Ragnarok Online', date: '2026-06-29' }
   ].slice(0, 10);
 
   var MONTH_NAMES_ES = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
 
-  function formatVideoDate(yyyyMm) {
-    var parts = yyyyMm.split('-');
+  function formatVideoDate(yyyyMmDd) {
+    var parts = yyyyMmDd.split('-');
     var monthName = MONTH_NAMES_ES[parseInt(parts[1], 10) - 1] || '';
-    return monthName + ' ' + parts[0];
+    return monthName + ' ' + parseInt(parts[2], 10);
   }
 
   var PLAY_ICON_SVG = '<svg viewBox="0 0 68 48" width="68" height="48"><path d="M66.5 7.7c-.8-3-2.9-5.3-5.7-6.1C55.8 0 34 0 34 0S12.2 0 7.2 1.6C4.4 2.4 2.3 4.7 1.5 7.7 0 13 0 24 0 24s0 11 1.5 16.3c.8 3 2.9 5.3 5.7 6.1C12.2 48 34 48 34 48s21.8 0 26.8-1.6c2.8-.8 4.9-3.1 5.7-6.1C68 35 68 24 68 24s0-11-1.5-16.3z" fill="#4dd8e8" opacity="0.9"/><path d="M45 24 27 14v20z" fill="#0a0a0d"/></svg>';
@@ -62,9 +64,9 @@
   var track = document.getElementById('carouselTrack');
   var prevBtn = document.getElementById('carouselPrev');
   var nextBtn = document.getElementById('carouselNext');
-  var dotsWrap = document.getElementById('carouselDots');
+  var progressBar = document.getElementById('carouselProgressBar');
 
-  if (track && prevBtn && nextBtn && dotsWrap && VIDEOS.length) {
+  if (track && prevBtn && nextBtn && progressBar && VIDEOS.length) {
     // Arma cada slide: miniatura (facade lazy-load) + título + canal + fecha
     VIDEOS.forEach(function (video) {
       var slide = document.createElement('div');
@@ -99,43 +101,42 @@
     });
 
     var slides = Array.prototype.slice.call(track.children);
-    var current = 0;
+    var offset = 0; // px ya scrolleados dentro del track
 
-    // Genera los dots dinámicamente según la cantidad de slides
-    slides.forEach(function (_, index) {
-      var dot = document.createElement('button');
-      dot.className = 'carousel-dot';
-      dot.setAttribute('role', 'tab');
-      dot.setAttribute('aria-label', 'Ir al video ' + (index + 1));
-      dot.addEventListener('click', function () {
-        goTo(index);
-      });
-      dotsWrap.appendChild(dot);
-    });
-
-    var dots = Array.prototype.slice.call(dotsWrap.children);
-
-    function update() {
-      track.style.transform = 'translateX(-' + (current * 100) + '%)';
-      dots.forEach(function (dot, i) {
-        dot.classList.toggle('is-active', i === current);
-      });
+    // Distancia entre el inicio de una tarjeta y la siguiente (ancho + gap),
+    // medida directamente del layout real en vez de asumir un valor fijo,
+    // así se adapta solo a cualquier ancho de pantalla.
+    function getStep() {
+      if (slides.length < 2) return slides.length ? slides[0].getBoundingClientRect().width : 0;
+      return slides[1].getBoundingClientRect().left - slides[0].getBoundingClientRect().left;
     }
 
-    function goTo(index) {
-      current = (index + slides.length) % slides.length;
+    // Cuánto se puede scrollear como máximo sin dejar espacio vacío al final
+    function getMaxOffset() {
+      return Math.max(0, track.scrollWidth - track.clientWidth);
+    }
+
+    function update() {
+      var max = getMaxOffset();
+      offset = Math.max(0, Math.min(max, offset));
+      track.style.transform = 'translateX(-' + offset + 'px)';
+      progressBar.style.width = (max > 0 ? (offset / max) * 100 : 0) + '%';
+    }
+
+    function goTo(newOffset) {
+      offset = newOffset;
       update();
     }
 
     prevBtn.addEventListener('click', function () {
-      goTo(current - 1);
+      goTo(offset - getStep());
     });
 
     nextBtn.addEventListener('click', function () {
-      goTo(current + 1);
+      goTo(offset + getStep());
     });
 
-    // El track necesita transición + layout en fila para el translateX
+    // El track necesita transición para el translateX
     track.style.transition = 'transform 0.3s ease';
     track.style.willChange = 'transform';
 
@@ -155,23 +156,26 @@
     track.addEventListener('touchend', function () {
       var SWIPE_THRESHOLD = 40;
       if (touchDeltaX > SWIPE_THRESHOLD) {
-        goTo(current - 1);
+        goTo(offset - getStep());
       } else if (touchDeltaX < -SWIPE_THRESHOLD) {
-        goTo(current + 1);
+        goTo(offset + getStep());
       }
     });
 
+    window.addEventListener('resize', update);
     update();
 
     // Autoplay suave: avanza solo, se pausa con hover/foco/touch y se
     // detiene para siempre apenas se carga un video real (ver sección 3).
-    var AUTOPLAY_MS = 6000;
+    // Al llegar al final vuelve al principio.
+    var AUTOPLAY_MS = 4500;
     var autoplayTimer = null;
 
     function startAutoplay() {
       if (prefersReducedMotion || autoplayTimer || slides.length < 2) return;
       autoplayTimer = window.setInterval(function () {
-        goTo(current + 1);
+        var max = getMaxOffset();
+        goTo(offset >= max ? 0 : offset + getStep());
       }, AUTOPLAY_MS);
     }
 

@@ -201,18 +201,24 @@
         </div>
 
         <!-- Carrusel de videos: se completa por JS (script.js) desde la lista
-             VIDEOS (hasta 10). Ver script.js para agregar/editar videos. -->
+             VIDEOS (hasta 10, se ven varias tarjetas a la vez con scroll
+             horizontal). Ver script.js para agregar/editar videos. -->
         <div class="carousel reveal" id="videoCarousel" aria-roledescription="carrusel" aria-label="Videos de la guild">
           <div class="carousel-track" id="carouselTrack"></div>
 
-          <button class="carousel-arrow carousel-arrow-prev" id="carouselPrev" aria-label="Video anterior">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-          </button>
-          <button class="carousel-arrow carousel-arrow-next" id="carouselNext" aria-label="Video siguiente">
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
-          </button>
-
-          <div class="carousel-dots" id="carouselDots" role="tablist" aria-label="Seleccionar video"></div>
+          <div class="carousel-controls">
+            <div class="carousel-progress">
+              <div class="carousel-progress-bar" id="carouselProgressBar"></div>
+            </div>
+            <div class="carousel-arrows">
+              <button class="carousel-arrow" id="carouselPrev" aria-label="Video anterior">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+              </button>
+              <button class="carousel-arrow" id="carouselNext" aria-label="Video siguiente">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
