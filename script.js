@@ -7,8 +7,7 @@
    4) Header que gana sombra al hacer scroll
    5) Scroll-reveal de secciones (IntersectionObserver)
    6) Contador de miembros conectados en Discord (API pública de invitaciones)
-   7) Scroll horizontal con relato por pasos en "Acerca de la Guild"
-   8) Partículas de fondo decorativas en "Acerca de la Guild"
+   7) Partículas de fondo decorativas en "Acerca de la Guild"
    ========================================================= */
 
 (function () {
@@ -307,85 +306,7 @@
   updateDiscordOnlineCount();
   window.setInterval(updateDiscordOnlineCount, DISCORD_REFRESH_MS);
 
-  /* ---------- 7) Scroll horizontal con relato por pasos ("Acerca de la Guild") ---------- */
-  // Por defecto el HTML ya se ve bien apilado normalmente y 100% legible
-  // (progressive enhancement). Solo si hay soporte y sin prefers-reduced-motion
-  // se arma una "línea de tiempo" con dos tipos de paso:
-  //   - "chapter": el cambio de panel (desliza horizontalmente, ver translateX)
-  //   - "beat": un elemento [data-beat] que aparece (fade u slide-left) a
-  //     medida que se hace scroll dentro del rango asignado a ese paso.
-  var hscroll = document.getElementById('hscrollHistoria');
-
-  if (hscroll && !prefersReducedMotion) {
-    var hscrollSticky = hscroll.querySelector('.hscroll-sticky');
-    var hscrollTrack = hscroll.querySelector('.hscroll-track');
-    var hscrollPanels = Array.prototype.slice.call(hscrollTrack.children);
-
-    var hscrollTimeline = [];
-    hscrollPanels.forEach(function (panel, panelIndex) {
-      if (panelIndex > 0) {
-        hscrollTimeline.push({ type: 'chapter' });
-      }
-      var beats = panel.querySelectorAll('[data-beat]');
-      beats.forEach(function (beatEl) {
-        hscrollTimeline.push({
-          type: 'beat',
-          el: beatEl,
-          effect: beatEl.getAttribute('data-beat-effect') || 'fade'
-        });
-      });
-    });
-
-    if (hscrollPanels.length > 1 && hscrollTimeline.length) {
-      hscroll.classList.add('hscroll-enabled');
-
-      var HSCROLL_STEP_VH = 42; // alto de scroll dedicado a cada paso del relato
-      hscroll.style.height = (hscrollTimeline.length * HSCROLL_STEP_VH) + 'vh';
-
-      var hscrollStepSize = 1 / hscrollTimeline.length;
-      var hscrollTicking = false;
-
-      function updateHscroll() {
-        var rect = hscroll.getBoundingClientRect();
-        var scrollableDistance = hscroll.offsetHeight - window.innerHeight;
-        var overallProgress = scrollableDistance > 0 ? (-rect.top) / scrollableDistance : 0;
-        overallProgress = Math.max(0, Math.min(1, overallProgress));
-
-        var chapterOffset = 0;
-
-        hscrollTimeline.forEach(function (step, index) {
-          var stepStart = index * hscrollStepSize;
-          var localProgress = (overallProgress - stepStart) / hscrollStepSize;
-          localProgress = Math.max(0, Math.min(1, localProgress));
-
-          if (step.type === 'chapter') {
-            chapterOffset += localProgress;
-            return;
-          }
-
-          step.el.style.opacity = String(localProgress);
-          step.el.style.transform = step.effect === 'slide-left'
-            ? 'translateX(' + ((1 - localProgress) * 70) + 'px)'
-            : 'translateY(' + ((1 - localProgress) * 16) + 'px)';
-        });
-
-        hscrollTrack.style.transform = 'translateX(-' + (chapterOffset * hscrollSticky.clientWidth) + 'px)';
-        hscrollTicking = false;
-      }
-
-      window.addEventListener('scroll', function () {
-        if (!hscrollTicking) {
-          window.requestAnimationFrame(updateHscroll);
-          hscrollTicking = true;
-        }
-      }, { passive: true });
-
-      window.addEventListener('resize', updateHscroll);
-      updateHscroll();
-    }
-  }
-
-  /* ---------- 8) Partículas de fondo decorativas ---------- */
+  /* ---------- 7) Partículas de fondo decorativas ---------- */
   // Puramente visuales (aria-hidden en el HTML). Se generan una sola vez con
   // posiciones/tamaños/tiempos aleatorios y luego animan solo con CSS (sin
   // costo de JS continuo). Se omiten directamente con prefers-reduced-motion.

@@ -80,117 +80,102 @@
     </section>
 
     <!-- ============ ACERCA DE LA GUILD ============ -->
-    <section id="historia" class="section section-particles-host">
+    <!-- "Etapa" 2: ocupa como mínimo una pantalla completa (min-height, no
+         height fijo) para no romper el layout si el contenido no entra en
+         pantallas chicas — scroll normal del navegador, sin scroll-jacking
+         (esto reemplaza el carrusel horizontal anterior, que daba problemas
+         de visualización en iOS/iPad por la combinación sticky + vh). -->
+    <section id="historia" class="section section-fullscreen section-particles-host">
       <!-- Partículas decorativas de fondo, generadas por script.js. Puramente
            visuales (aria-hidden) y desactivadas con prefers-reduced-motion. -->
       <div class="particles" id="aboutParticles" aria-hidden="true"></div>
 
       <div class="section-inner">
         <h2 class="section-title reveal">Acerca de la Guild</h2>
-      </div>
 
-      <!-- Scroll horizontal tipo carrusel con relato por pasos ("beats"): cada
-           elemento con [data-beat] aparece uno a uno a medida que se hace scroll,
-           y entre paneles el contenido se desliza horizontalmente. Se activa vía
-           JS (script.js) solo si hay soporte y sin prefers-reduced-motion; sin JS
-           o con "menos movimiento" esto se ve como bloques apilados normales, ya
-           visibles de entrada. -->
-      <div class="hscroll" id="hscrollHistoria">
-        <div class="hscroll-sticky">
-          <div class="hscroll-track" id="hscrollTrack">
+        <h3 class="section-subtitle reveal reveal-slide-left">Cómo nace Special Delivery</h3>
+        <p class="section-text reveal">En el 2008 junto a nuestros amigos fundamos Special Delivery para jugar en Ragnarok Online, con el tiempo participamos en distintos servidores hasta que ahora hemos decidido participar en la versión de Ragnarok Online Origin Classic Americas.</p>
 
-            <!-- Panel 1: cómo nace la guild -->
-            <div class="hscroll-panel">
-              <div class="hscroll-panel-inner">
-                <h3 class="hscroll-subtitle" data-beat data-beat-effect="slide-left">Cómo nace Special Delivery</h3>
-                <p class="hscroll-text" data-beat data-beat-effect="fade">En el 2008 junto a nuestros amigos fundamos Special Delivery para jugar en Ragnarok Online, con el tiempo participamos en distintos servidores hasta que ahora hemos decidido participar en la versión de Ragnarok Online Origin Classic Americas.</p>
+        <h3 class="section-subtitle reveal reveal-slide-left">Liderazgo</h3>
+
+        <div class="org-chart">
+          <div class="org-tier org-tier-lead reveal">
+            <p class="org-role">Guild Leader</p>
+            <div class="org-people">
+              <div class="org-person">
+                <span class="org-avatar" aria-hidden="true">H</span>
+                <span class="org-name">Hunteriwi</span>
               </div>
             </div>
+          </div>
 
-            <!-- Panel 2: liderazgo -->
-            <div class="hscroll-panel">
-              <div class="hscroll-panel-inner">
-                <h3 class="leadership-title" data-beat data-beat-effect="slide-left">Liderazgo</h3>
-
-                <div class="org-chart">
-                  <div class="org-tier org-tier-lead">
-                    <p class="org-role" data-beat data-beat-effect="fade">Guild Leader</p>
-                    <div class="org-people">
-                      <div class="org-person" data-beat data-beat-effect="fade">
-                        <span class="org-avatar" aria-hidden="true">H</span>
-                        <span class="org-name">Hunteriwi</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="org-tier">
-                    <p class="org-role" data-beat data-beat-effect="fade">Vice Guild Leader</p>
-                    <div class="org-people">
-                      <div class="org-person" data-beat data-beat-effect="fade">
-                        <span class="org-avatar" aria-hidden="true">A</span>
-                        <span class="org-name">Ahead</span>
-                      </div>
-                      <div class="org-person" data-beat data-beat-effect="fade">
-                        <span class="org-avatar" aria-hidden="true">G</span>
-                        <span class="org-name">Gotic</span>
-                      </div>
-                      <div class="org-person" data-beat data-beat-effect="fade">
-                        <span class="org-avatar" aria-hidden="true">S</span>
-                        <span class="org-name">Styan</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="org-tier">
-                    <p class="org-role" data-beat data-beat-effect="fade">Comandante</p>
-                    <div class="org-people">
-                      <div class="org-person" data-beat data-beat-effect="fade">
-                        <span class="org-avatar" aria-hidden="true">P</span>
-                        <span class="org-name">Por definir</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="org-tier">
-                    <p class="org-role" data-beat data-beat-effect="fade">Oficiales</p>
-                    <div class="org-people">
-                      <div class="org-person" data-beat data-beat-effect="fade">
-                        <span class="org-avatar" aria-hidden="true">P</span>
-                        <span class="org-name">Pendiente</span>
-                      </div>
-                      <div class="org-person" data-beat data-beat-effect="fade">
-                        <span class="org-avatar" aria-hidden="true">P</span>
-                        <span class="org-name">Pendiente</span>
-                      </div>
-                      <div class="org-person" data-beat data-beat-effect="fade">
-                        <span class="org-avatar" aria-hidden="true">P</span>
-                        <span class="org-name">Pendiente</span>
-                      </div>
-                      <div class="org-person" data-beat data-beat-effect="fade">
-                        <span class="org-avatar" aria-hidden="true">P</span>
-                        <span class="org-name">Pendiente</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="org-tier">
-                    <p class="org-role" data-beat data-beat-effect="fade">Estrella del Carisma</p>
-                    <div class="org-people">
-                      <div class="org-person" data-beat data-beat-effect="fade">
-                        <span class="org-avatar" aria-hidden="true">L</span>
-                        <span class="org-name">Lulupe</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          <div class="org-tier reveal">
+            <p class="org-role">Vice Guild Leader</p>
+            <div class="org-people">
+              <div class="org-person">
+                <span class="org-avatar" aria-hidden="true">A</span>
+                <span class="org-name">Ahead</span>
+              </div>
+              <div class="org-person">
+                <span class="org-avatar" aria-hidden="true">G</span>
+                <span class="org-name">Gotic</span>
+              </div>
+              <div class="org-person">
+                <span class="org-avatar" aria-hidden="true">S</span>
+                <span class="org-name">Styan</span>
               </div>
             </div>
+          </div>
 
+          <div class="org-tier reveal">
+            <p class="org-role">Comandante</p>
+            <div class="org-people">
+              <div class="org-person">
+                <span class="org-avatar" aria-hidden="true">P</span>
+                <span class="org-name">Por definir</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="org-tier reveal">
+            <p class="org-role">Oficiales</p>
+            <div class="org-people">
+              <div class="org-person">
+                <span class="org-avatar" aria-hidden="true">P</span>
+                <span class="org-name">Pendiente</span>
+              </div>
+              <div class="org-person">
+                <span class="org-avatar" aria-hidden="true">P</span>
+                <span class="org-name">Pendiente</span>
+              </div>
+              <div class="org-person">
+                <span class="org-avatar" aria-hidden="true">P</span>
+                <span class="org-name">Pendiente</span>
+              </div>
+              <div class="org-person">
+                <span class="org-avatar" aria-hidden="true">P</span>
+                <span class="org-name">Pendiente</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="org-tier reveal">
+            <p class="org-role">Estrella del Carisma</p>
+            <div class="org-people">
+              <div class="org-person">
+                <span class="org-avatar" aria-hidden="true">L</span>
+                <span class="org-name">Lulupe</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+    </section>
 
-      <!-- Videos + redes sociales -->
+    <!-- ============ MIRA NUESTROS VIDEOS ============ -->
+    <!-- "Etapa" 3: a diferencia del resto, esta mide la mitad de la pantalla
+         (min-height: 50vh) — es solo un carrusel, no necesita más espacio. -->
+    <section id="videos" class="section section-halfscreen">
       <div class="section-inner">
         <h3 class="videos-title reveal">Mira nuestros videos y síguenos en redes</h3>
 
@@ -233,7 +218,8 @@
     </section>
 
     <!-- ============ RECLUTAMIENTO ============ -->
-    <section id="reclutamiento" class="section section-alt">
+    <!-- "Etapa" 4 (última, antes del footer): altura completa igual que Hero y Acerca de la Guild -->
+    <section id="reclutamiento" class="section section-alt section-fullscreen">
       <div class="section-inner">
         <h2 class="section-title reveal">Reclutamiento</h2>
         <p class="section-lead reveal">[Placeholder: qué busca la guild en nuevos miembros — actitud, compromiso, tipo de jugador que encaja con Special Delivery.]</p>

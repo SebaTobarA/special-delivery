@@ -93,10 +93,7 @@
   transform: none;
 }
 
-/* Efecto cascada dentro de cada grupo (galería, requisitos) */
-.gallery-img.reveal:nth-child(2) { transition-delay: 0.1s; }
-.gallery-img.reveal:nth-child(3) { transition-delay: 0.2s; }
-
+/* Efecto cascada dentro de cada grupo (requisitos) */
 .requirements-list li.reveal:nth-child(2) { transition-delay: 0.06s; }
 .requirements-list li.reveal:nth-child(3) { transition-delay: 0.12s; }
 .requirements-list li.reveal:nth-child(4) { transition-delay: 0.18s; }
@@ -380,6 +377,10 @@ ul {
 
 /* ---------- Hero ---------- */
 .hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   padding: 3rem 1rem 2.5rem;
   text-align: center;
   background:
@@ -646,9 +647,32 @@ ul {
   background: var(--color-bg-alt);
 }
 
+/* "Etapas" de la web: cada una ocupa al menos una pantalla completa (o media,
+   para la de videos) y el scroll entre ellas es el scroll normal del
+   navegador — sin scroll-jacking, para evitar los problemas de renderizado
+   que esto causaba en iPad/iPhone (position:sticky + vh dinámico de iOS). Se
+   usa min-height (no height fijo) para que si el contenido no entra en
+   pantallas chicas, la sección simplemente crezca en vez de recortarse. */
+.section-fullscreen {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.section-halfscreen {
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
 .section-inner {
   max-width: var(--max-width);
   margin: 0 auto;
+  width: 100%;
 }
 
 .section-title {
@@ -701,96 +725,57 @@ ul {
 }
 
 /* Todo el contenido real de la sección va por encima de las partículas */
-.section-particles-host > .section-inner,
-.section-particles-host > .hscroll {
+.section-particles-host > .section-inner {
   position: relative;
   z-index: 1;
 }
 
-/* ---------- Scroll horizontal tipo carrusel ("Acerca de la Guild") ----------
-   Por defecto (sin JS, o con prefers-reduced-motion) esto es un bloque
-   apilado normal: cada .hscroll-panel se lee de arriba hacia abajo, sin
-   scroll-jacking. script.js agrega .hscroll-enabled solo cuando corresponde
-   activar el efecto de scroll horizontal fijado (position: sticky), y anima
-   cada [data-beat] a medida que se scrollea (ver updateHscroll en script.js). */
-.hscroll-track {
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
-}
-
-.hscroll-panel {
-  width: 100%;
-  padding: 1.5rem 0;
-}
-
-.hscroll-panel-inner {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  text-align: left;
-}
-
-.hscroll-text {
-  font-size: 1.1rem;
-  line-height: 1.7;
-  color: var(--color-text);
-  max-width: 65ch;
-}
-
-.hscroll-enabled.hscroll {
-  position: relative;
-}
-
-.hscroll-enabled .hscroll-sticky {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-}
-
-.hscroll-enabled .hscroll-track {
-  flex-direction: row;
-  flex-wrap: nowrap;
-  gap: 0;
-  width: max-content;
-  will-change: transform;
-}
-
-.hscroll-enabled .hscroll-panel {
-  width: 100vw;
-  flex: 0 0 100vw;
-  padding: 2rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-}
-
-/* Subtítulo grande de "Cómo nace Special Delivery" y título de "Liderazgo":
-   mismo tratamiento tipográfico, ambos animados con el efecto "slide-left"
-   (ver [data-beat-effect="slide-left"] y updateHscroll en script.js). */
-.hscroll-subtitle,
-.leadership-title {
+/* ---------- Acerca de la Guild: subtítulos, texto y organigrama ----------
+   Reveal normal (scroll-reveal con IntersectionObserver, ver script.js),
+   sin scroll-jacking: mucho más robusto entre navegadores/dispositivos. */
+.section-subtitle {
   color: var(--color-primary);
   font-size: 1.7rem;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   text-align: left;
-  margin: 0 0 1.4rem;
+  margin: 2rem 0 1.2rem;
 }
 
-.hscroll-subtitle {
-  margin-bottom: 1.2rem;
+.section-inner > .section-subtitle:first-child {
+  margin-top: 0;
 }
 
-/* ---------- Liderazgo: organigrama (panel 2 del scroll horizontal) ---------- */
+.section-text {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--color-text);
+  max-width: 65ch;
+  text-align: left;
+}
+
+/* Variante de .reveal: entra deslizándose desde la derecha en vez de subir */
+.reveal.reveal-slide-left {
+  transform: translateX(70px);
+}
+
+.reveal.reveal-slide-left.is-visible {
+  transform: none;
+}
+
+/* ---------- Liderazgo: organigrama ---------- */
 .org-chart {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
+  margin-top: 0.5rem;
 }
+
+/* Efecto cascada: cada cargo aparece un poco después que el anterior */
+.org-tier.reveal:nth-child(2) { transition-delay: 0.08s; }
+.org-tier.reveal:nth-child(3) { transition-delay: 0.16s; }
+.org-tier.reveal:nth-child(4) { transition-delay: 0.24s; }
+.org-tier.reveal:nth-child(5) { transition-delay: 0.32s; }
 
 .org-tier {
   display: flex;
@@ -852,7 +837,7 @@ ul {
   letter-spacing: 0.02em;
   text-transform: uppercase;
   text-align: center;
-  margin: 3rem 0 1.2rem;
+  margin: 0 0 1.2rem;
 }
 
 .social-links {
@@ -1009,10 +994,6 @@ ul {
   .hero-logo {
     width: 180px;
     height: 180px;
-  }
-
-  .gallery {
-    grid-template-columns: repeat(3, 1fr);
   }
 
   .recruit-cta {
