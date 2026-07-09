@@ -235,20 +235,13 @@
   var siteHeader = document.querySelector('.site-header');
 
   if (siteHeader) {
-    var ticking = false;
-
     function updateHeaderState() {
       siteHeader.classList.toggle('is-scrolled', window.scrollY > 8);
-      ticking = false;
     }
 
-    window.addEventListener('scroll', function () {
-      if (!ticking) {
-        window.requestAnimationFrame(updateHeaderState);
-        ticking = true;
-      }
-    }, { passive: true });
-
+    // Directo en el 'scroll', sin encolar con requestAnimationFrame (ver
+    // nota en la sección 8 sobre por qué eso puede no ser confiable).
+    window.addEventListener('scroll', updateHeaderState, { passive: true });
     updateHeaderState();
   }
 
@@ -381,8 +374,6 @@
     if (deckSlides.length > 1) {
       deck.classList.add('deck-enabled');
 
-      var deckTicking = false;
-
       function updateDeck() {
         var rect = deck.getBoundingClientRect();
         var scrollable = deck.offsetHeight - window.innerHeight;
@@ -405,16 +396,15 @@
           el.classList.toggle('is-visible', fade > 0.5);
         });
 
-        deckTicking = false;
       }
 
-      window.addEventListener('scroll', function () {
-        if (!deckTicking) {
-          window.requestAnimationFrame(updateDeck);
-          deckTicking = true;
-        }
-      }, { passive: true });
-
+      // Se llama directo en el 'scroll' en vez de encolar con
+      // requestAnimationFrame: rAF puede quedar sin dispararse de forma
+      // confiable en algunos navegadores/situaciones, dejando el crossfade
+      // "pegado" en el estado inicial durante todo el scroll. La función es
+      // liviana (solo escribe unos estilos), así que llamarla en cada
+      // evento de scroll no tiene costo real de performance.
+      window.addEventListener('scroll', updateDeck, { passive: true });
       window.addEventListener('resize', updateDeck);
       updateDeck();
     }

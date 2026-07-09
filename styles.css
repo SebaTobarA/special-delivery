@@ -688,10 +688,16 @@ ul {
 /* ---------- Partículas de fondo ("Acerca de la Guild") ----------
    Puramente decorativas (aria-hidden), generadas una sola vez por script.js
    con posiciones/tamaños/tiempos aleatorios. Se omiten por completo con
-   prefers-reduced-motion (ver script.js) para no gastar DOM ni animación. */
+   prefers-reduced-motion (ver script.js) para no gastar DOM ni animación.
+   Importante: SIN overflow acá (solo position:relative). Cualquier
+   ancestro con overflow distinto de "visible" rompe position:sticky en
+   sus descendientes — .particles ya recorta sus propias partículas con
+   su propio overflow:hidden, así que no hace falta repetirlo acá, y
+   repetirlo fue justamente lo que impedía que .deck-sticky se fijara en
+   pantalla (el crossfade "funcionaba" en los números pero nunca se veía
+   fijo, porque el contenido pasaba de largo con el scroll normal). */
 .section-particles-host {
   position: relative;
-  overflow: hidden;
 }
 
 .particles {
