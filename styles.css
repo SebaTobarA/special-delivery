@@ -722,28 +722,67 @@ ul {
   z-index: 1;
 }
 
-/* ---------- Acerca de la Guild: subtítulos, texto y organigrama ----------
-   Reveal normal (scroll-reveal con IntersectionObserver, ver script.js),
-   sin scroll-jacking: mucho más robusto entre navegadores/dispositivos. */
+/* ---------- Acerca de la Guild: rail de 2 paneles ----------
+   Mismo mecanismo que el carrusel de videos (barra de progreso + flechas +
+   swipe, ver script.js), sin scroll-jacking de la página: mucho más
+   robusto entre navegadores/dispositivos. Cada panel: título a la
+   izquierda, contenido en una tarjeta a la derecha. */
+.rail {
+  position: relative;
+  margin-top: 1.5rem;
+}
+
+.rail-track {
+  display: flex;
+  overflow: hidden;
+}
+
+.rail-slide {
+  flex: 0 0 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  /* Sin esto, cuando un panel es más bajo que el más alto del rail (que
+     fuerza la altura de todos, ver .rail-track), el espacio sobrante se
+     reparte como gap extra en vez de quedar simplemente debajo. */
+  align-content: start;
+  gap: 1.5rem;
+  padding: 0.5rem 0.25rem;
+}
+
+.rail-col-title {
+  position: relative;
+}
+
+.rail-title-accent {
+  display: none;
+}
+
+.rail-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+}
+
 .section-subtitle {
   color: var(--color-primary);
   font-size: 1.7rem;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   text-align: left;
-  margin: 2rem 0 1.2rem;
-}
-
-.section-inner > .section-subtitle:first-child {
-  margin-top: 0;
+  margin: 0;
 }
 
 .section-text {
   font-size: 1.1rem;
   line-height: 1.7;
   color: var(--color-text);
-  max-width: 65ch;
   text-align: left;
+}
+
+.rail-card .section-text {
+  transition-delay: 0.15s;
 }
 
 /* Variante de .reveal: entra deslizándose desde la derecha en vez de subir */
@@ -760,14 +799,15 @@ ul {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-  margin-top: 0.5rem;
 }
 
-/* Efecto cascada: cada cargo aparece un poco después que el anterior */
-.org-tier.reveal:nth-child(2) { transition-delay: 0.08s; }
-.org-tier.reveal:nth-child(3) { transition-delay: 0.16s; }
-.org-tier.reveal:nth-child(4) { transition-delay: 0.24s; }
-.org-tier.reveal:nth-child(5) { transition-delay: 0.32s; }
+/* Efecto cascada: el título del panel aparece primero, después cada cargo
+   uno después del otro (ver data-reveal-on-rail en script.js) */
+.org-tier.reveal:nth-child(1) { transition-delay: 0.15s; }
+.org-tier.reveal:nth-child(2) { transition-delay: 0.25s; }
+.org-tier.reveal:nth-child(3) { transition-delay: 0.35s; }
+.org-tier.reveal:nth-child(4) { transition-delay: 0.45s; }
+.org-tier.reveal:nth-child(5) { transition-delay: 0.55s; }
 
 .org-tier {
   display: flex;
@@ -991,6 +1031,23 @@ ul {
   .recruit-cta {
     flex-direction: row;
     align-items: center;
+  }
+
+  .rail-slide {
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 2.5rem;
+    padding: 1rem;
+  }
+
+  .rail-title-accent {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -1.25rem;
+    width: 3px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
   }
 }
 
