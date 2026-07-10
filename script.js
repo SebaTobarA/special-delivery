@@ -371,6 +371,12 @@
   if (deck && !prefersReducedMotion) {
     var deckSlides = Array.prototype.slice.call(deck.querySelectorAll('.deck-slide'));
 
+    // Timeline de liderazgo (lámina 2): la línea y el "encendido" de cada
+    // rango se dibujan en vivo con el mismo progreso de scroll que mueve el
+    // crossfade, en vez de aparecer todos juntos con un delay fijo.
+    var timelineFill = document.getElementById('timelineFill');
+    var timelineSteps = Array.prototype.slice.call(document.querySelectorAll('#leadershipTimeline .timeline-step'));
+
     if (deckSlides.length > 1) {
       deck.classList.add('deck-enabled');
 
@@ -380,9 +386,11 @@
         var progress = scrollable > 0 ? (-rect.top) / scrollable : 0;
         progress = Math.max(0, Math.min(1, progress));
 
-        // La transición (fundido cruzado) ocurre en el 20% central del
-        // recorrido; antes de eso la lámina 1 está sola, después la 2.
-        var fade = (progress - 0.4) / 0.2;
+        // La transición (fundido cruzado) ocurre en un tramo más ancho que
+        // antes (35%–70% del recorrido en vez de 40%–60%) para dejarle más
+        // "metros" de scroll a la timeline de liderazgo y que se sienta
+        // ligada a la rueda del mouse en vez de instantánea.
+        var fade = (progress - 0.35) / 0.35;
         fade = Math.max(0, Math.min(1, fade));
 
         deckSlides[0].style.opacity = String(1 - fade);
@@ -390,12 +398,20 @@
         deckSlides[0].setAttribute('aria-hidden', fade > 0.5 ? 'true' : 'false');
         deckSlides[1].setAttribute('aria-hidden', fade <= 0.5 ? 'true' : 'false');
 
-        // El organigrama de la lámina 2 se revela (en cascada, ver CSS) recién
-        // cuando esa lámina domina, y vuelve a ocultarse si se retrocede.
-        deckSlides[1].querySelectorAll('.reveal-scroll').forEach(function (el) {
-          el.classList.toggle('is-visible', fade > 0.5);
-        });
+        // La línea de la timeline crece con el mismo "fade": a mitad de
+        // camino del crossfade, la línea está a mitad de dibujarse.
+        if (timelineFill) {
+          timelineFill.style.transform = 'scaleY(' + fade + ')';
+        }
 
+        // Cada rango se "enciende" cuando el progreso alcanza su umbral,
+        // repartidos en partes iguales a lo largo del mismo "fade".
+        if (timelineSteps.length) {
+          timelineSteps.forEach(function (step, index) {
+            var threshold = (index + 1) / timelineSteps.length;
+            step.classList.toggle('is-lit', fade >= threshold - 0.001);
+          });
+        }
       }
 
       // Se llama directo en el 'scroll' en vez de encolar con

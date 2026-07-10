@@ -20,8 +20,12 @@
 
   --color-focus: #ffe27a;        /* foco de teclado, alto contraste */
 
+  --gradient-title: linear-gradient(135deg, #ffffff 15%, var(--color-primary) 60%, var(--color-secondary) 100%);
+  --gradient-line: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+
   --radius: 10px;
   --max-width: 1100px;
+  --max-width-wide: 1280px;
 
   --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
@@ -80,6 +84,25 @@
   }
 }
 
+@keyframes wordmarkDrift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -14px, 0);
+  }
+}
+
+@keyframes lineGrow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 /* Scroll-reveal: oculto hasta que script.js le agrega .is-visible al entrar en viewport.
    El <noscript> en el <head> asegura que sin JS el contenido siga siendo visible.
    .reveal-scroll es la variante reversible: se oculta de nuevo si se sale
@@ -88,21 +111,83 @@
 .reveal,
 .reveal-scroll {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: translateY(34px) scale(0.97);
+  filter: blur(6px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform, filter;
 }
 
 .reveal.is-visible,
 .reveal-scroll.is-visible {
   opacity: 1;
   transform: none;
+  filter: blur(0);
+}
+
+/* Variantes direccionales: entran desde un costado en vez de desde abajo,
+   para dar variedad al recorrido de scroll (usadas en bloques de texto
+   destacados, ej. citas / frases de identidad de la guild). */
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  filter: blur(6px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-left.is-visible {
+  opacity: 1;
+  transform: none;
+  filter: blur(0);
 }
 
 /* Efecto cascada dentro de cada grupo (requisitos) */
-.requirements-list li.reveal:nth-child(2) { transition-delay: 0.06s; }
-.requirements-list li.reveal:nth-child(3) { transition-delay: 0.12s; }
-.requirements-list li.reveal:nth-child(4) { transition-delay: 0.18s; }
-.requirements-list li.reveal:nth-child(5) { transition-delay: 0.24s; }
+.requirements-list li.reveal:nth-child(2),
+.reveal-stagger > *:nth-child(2) { transition-delay: 0.08s; }
+.requirements-list li.reveal:nth-child(3),
+.reveal-stagger > *:nth-child(3) { transition-delay: 0.16s; }
+.requirements-list li.reveal:nth-child(4),
+.reveal-stagger > *:nth-child(4) { transition-delay: 0.24s; }
+.requirements-list li.reveal:nth-child(5),
+.reveal-stagger > *:nth-child(5) { transition-delay: 0.32s; }
+.reveal-stagger > *:nth-child(6) { transition-delay: 0.4s; }
+
+/* ---------- Eyebrow: etiqueta pequeña + línea, encabeza cada sección ---------- */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 0 1rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+.eyebrow::before {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--gradient-line);
+  transform-origin: left center;
+  animation: lineGrow 0.6s ease both;
+}
+
+.section-alt .eyebrow,
+.reclutamiento-hero .eyebrow {
+  color: var(--color-secondary);
+}
+
+.eyebrow-center {
+  justify-content: center;
+  width: 100%;
+}
 
 /* ---------- Reset básico ---------- */
 *,
@@ -117,7 +202,9 @@ html {
 
 body {
   margin: 0;
-  background: var(--color-bg);
+  background:
+    repeating-linear-gradient(115deg, rgba(111, 224, 245, 0.025) 0px, rgba(111, 224, 245, 0.025) 1px, transparent 1px, transparent 90px),
+    var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
   line-height: 1.55;
@@ -327,14 +414,20 @@ ul {
 /* Pulso suave en los dos CTA principales (hero y reclutamiento) para invitar al click,
    se detiene al pasar el mouse para no pelear con el glow del :hover */
 .hero .btn-discord,
-.recruit-cta .btn-discord {
+.recruit-cta .btn-discord,
+.join-teaser .btn-discord,
+.reclutamiento-hero .btn-discord {
   animation: pulseGlow 2.6s ease-in-out infinite;
 }
 
 .hero .btn-discord:hover,
 .hero .btn-discord:focus-visible,
 .recruit-cta .btn-discord:hover,
-.recruit-cta .btn-discord:focus-visible {
+.recruit-cta .btn-discord:focus-visible,
+.join-teaser .btn-discord:hover,
+.join-teaser .btn-discord:focus-visible,
+.reclutamiento-hero .btn-discord:hover,
+.reclutamiento-hero .btn-discord:focus-visible {
   animation-play-state: paused;
 }
 
@@ -425,12 +518,18 @@ ul {
   animation: floatY 4.5s ease-in-out infinite;
 }
 
+.hero .eyebrow {
+  justify-content: center;
+  animation: fadeInUp 0.7s ease both;
+}
+
 .hero-title {
-  font-size: 2.1rem;
+  font-size: clamp(2.4rem, 8vw, 4rem);
+  font-weight: 800;
   margin: 0 0 0.4rem;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
-  background: linear-gradient(180deg, #ffffff, var(--color-primary));
+  background: var(--gradient-title);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -673,16 +772,84 @@ ul {
 }
 
 .section-title {
-  font-size: 1.6rem;
+  font-size: clamp(2.1rem, 7vw, 3.4rem);
+  font-weight: 800;
   margin: 0 0 1.8rem;
-  color: var(--color-primary);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
+  line-height: 1.08;
   text-transform: uppercase;
+  background: var(--gradient-title);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .section-lead {
   color: var(--color-text-muted);
   max-width: 65ch;
+  font-size: 1.05rem;
+}
+
+/* ---------- Watermark: palabra gigante en transparencia detrás del
+   contenido de una sección, para dar sensación de peso/escala (referencia:
+   nostra.id). Va en un contenedor propio con overflow:hidden — nunca en un
+   ancestro de .deck, porque eso rompe position:sticky (ver historial). */
+.watermark-host {
+  position: relative;
+}
+
+.watermark {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.watermark span {
+  font-size: clamp(5rem, 22vw, 16rem);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(233, 237, 241, 0.09);
+  opacity: 0.55;
+  user-select: none;
+  animation: wordmarkDrift 10s ease-in-out infinite;
+}
+
+.watermark-host > .section-inner,
+.watermark-host > .deck {
+  position: relative;
+  z-index: 1;
+}
+
+/* Fantasma gigante en transparencia de fondo (sección Reclutamiento del home).
+   El centrado (translate -50%/-50%) vive en el wrapper y la animación de
+   flotado en la imagen: si ambas cosas tocaran "transform" en el mismo
+   elemento, la animación pisaría por completo el translate de centrado
+   (los keyframes reemplazan el valor, no lo componen). */
+.ghost-watermark-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: clamp(320px, 46vw, 620px);
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.ghost-watermark {
+  display: block;
+  width: 100%;
+  height: auto;
+  opacity: 0.06;
+  user-select: none;
+  animation: wordmarkDrift 12s ease-in-out infinite;
 }
 
 /* ---------- Partículas de fondo ("Acerca de la Guild") ----------
@@ -801,12 +968,17 @@ ul {
 }
 
 .section-subtitle {
-  color: var(--color-primary);
-  font-size: 1.7rem;
-  letter-spacing: 0.02em;
+  font-size: clamp(1.6rem, 4vw, 2.3rem);
+  font-weight: 800;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
   text-align: left;
   margin: 0;
+  line-height: 1.1;
+  background: var(--gradient-title);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .section-text {
@@ -816,30 +988,120 @@ ul {
   text-align: left;
 }
 
-/* ---------- Liderazgo: organigrama ---------- */
-.org-chart {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
+/* ---------- Liderazgo: timeline vertical numerada ----------
+   Referencia visual: nostra.id/about. La línea (.timeline-line-fill) y el
+   estado "encendido" de cada .timeline-step se controlan por JS en
+   updateDeck() (script.js), atados al mismo progreso de scroll que ya
+   mueve el crossfade — por eso se dibujan en vivo con la rueda del mouse
+   en vez de aparecer todos juntos. Sin JS (o con prefers-reduced-motion)
+   quedan todos encendidos de entrada: ver reglas por defecto abajo. */
+.leadership-text {
+  margin: 0.75rem 0 0;
+  font-size: 1rem;
+  color: var(--color-text-muted);
 }
 
-/* Efecto cascada: el título del bloque aparece primero, después cada cargo
-   uno después del otro */
-.org-tier.reveal-scroll:nth-child(1) { transition-delay: 0.15s; }
-.org-tier.reveal-scroll:nth-child(2) { transition-delay: 0.25s; }
-.org-tier.reveal-scroll:nth-child(3) { transition-delay: 0.35s; }
-.org-tier.reveal-scroll:nth-child(4) { transition-delay: 0.45s; }
-.org-tier.reveal-scroll:nth-child(5) { transition-delay: 0.55s; }
-
-.org-tier {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
+.timeline {
+  position: relative;
+  padding: 0.5rem 0.25rem 0.5rem 2.2rem;
 }
 
-.org-role {
+.timeline-line {
+  position: absolute;
+  top: 1.4rem;
+  bottom: 1.4rem;
+  left: 1.85rem;
+  width: 2px;
+  background: var(--color-border);
+  z-index: 1;
+}
+
+.timeline-line-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: top center;
+  transform: scaleY(1);
+  background: var(--gradient-line);
+  transition: transform 0.1s linear;
+}
+
+.timeline-list {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  list-style: none;
+  padding: 0;
   margin: 0;
+}
+
+.timeline-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.1rem;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.timeline-node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  margin-left: -2.2rem;
+  border-radius: 50%;
+  background: var(--color-bg);
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(111, 224, 245, 0.12);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+}
+
+.timeline-node-num {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--color-primary);
+}
+
+/* El primer rango (Guild Leader) siempre lleva el acento dorado, como
+   distinción fija de jerarquía — no depende del progreso de scroll. */
+.timeline-step-lead .timeline-node {
+  border-color: var(--color-focus);
+  box-shadow: 0 0 0 4px rgba(255, 226, 122, 0.16), 0 0 22px rgba(255, 226, 122, 0.35);
+}
+
+.timeline-step-lead .timeline-node-num {
+  color: var(--color-focus);
+}
+
+/* Estado "apagado": el paso todavía no fue alcanzado por el scroll.
+   Solo existe cuando script.js agrega .deck-enabled (ver más abajo). */
+.deck-enabled .timeline-step {
+  opacity: 0.35;
+}
+
+.deck-enabled .timeline-step.is-lit {
+  opacity: 1;
+}
+
+.deck-enabled .timeline-step:not(.timeline-step-lead) .timeline-node {
+  box-shadow: 0 0 0 4px rgba(111, 224, 245, 0.08);
+}
+
+.deck-enabled .timeline-step.is-lit:not(.timeline-step-lead) .timeline-node {
+  box-shadow: 0 0 0 4px rgba(111, 224, 245, 0.18), 0 0 18px rgba(111, 224, 245, 0.4);
+}
+
+.timeline-content {
+  padding-top: 0.4rem;
+}
+
+.timeline-role {
+  margin: 0 0 0.6rem;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.12em;
@@ -886,12 +1148,17 @@ ul {
 
 /* ---------- Videos + redes sociales ---------- */
 .videos-title {
-  color: var(--color-primary);
-  font-size: 1.4rem;
-  letter-spacing: 0.02em;
+  font-size: clamp(1.9rem, 5vw, 2.8rem);
+  font-weight: 800;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
   text-align: center;
   margin: 0 0 1.2rem;
+  line-height: 1.1;
+  background: var(--gradient-title);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .social-links {
@@ -931,6 +1198,8 @@ ul {
   margin-top: 2rem;
   font-size: 1.15rem;
   text-transform: uppercase;
+  color: var(--color-primary);
+  letter-spacing: 0.04em;
 }
 
 .requirements-list {
@@ -953,6 +1222,229 @@ ul {
 .recruit-cta-text {
   color: var(--color-text-muted);
   margin: 0;
+}
+
+/* Variante centrada, usada como CTA final de la página de reclutamiento */
+.recruit-cta-centered {
+  border-top: none;
+  padding-top: 0;
+  margin-top: 0;
+  align-items: center;
+  text-align: center;
+}
+
+/* ---------- Teaser "Reclutamiento" del home (estilo tarjeta de invitación) ---------- */
+.reclutamiento-teaser {
+  position: relative;
+  overflow: hidden;
+}
+
+.reclutamiento-teaser > .section-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.join-teaser {
+  position: relative;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+}
+
+.join-teaser .eyebrow {
+  justify-content: center;
+}
+
+.join-teaser-title {
+  margin: 0 0 1.1rem;
+}
+
+.join-teaser-text {
+  max-width: 52ch;
+  margin: 0 0 2.2rem;
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+}
+
+/* ---------- Reclutamiento: requisitos como tarjetas (página dedicada) ---------- */
+.requirements-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0 0;
+}
+
+/* Tarjeta suelta usada en "Qué buscamos en un nuevo miembro" (página de reclutamiento) */
+.culture-card {
+  margin-top: 1.5rem;
+}
+
+.requirement-card {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.4rem 1.5rem;
+  overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.requirement-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--gradient-line);
+}
+
+.requirement-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(111, 224, 245, 0.4);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+}
+
+.requirement-card-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 0.4rem;
+}
+
+.requirement-card-value {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+/* ---------- Reclutamiento: proceso de postulación en pasos ---------- */
+.process-steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.4rem;
+  counter-reset: step;
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0 0;
+}
+
+.process-step {
+  position: relative;
+  padding-left: 3.6rem;
+}
+
+.process-step::before {
+  counter-increment: step;
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: -0.2rem;
+  font-size: 1.6rem;
+  font-weight: 800;
+  background: var(--gradient-title);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.process-step-title {
+  margin: 0 0 0.3rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.process-step-text {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.process-step + .process-step {
+  padding-top: 1.4rem;
+  border-top: 1px dashed var(--color-border);
+}
+
+/* ---------- Página dedicada de Reclutamiento: hero propio ---------- */
+.reclutamiento-hero {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 5rem 1rem 3rem;
+  position: relative;
+  background: radial-gradient(circle at 50% 0%, rgba(111, 224, 245, 0.1), transparent 60%);
+}
+
+.reclutamiento-hero .eyebrow {
+  justify-content: center;
+}
+
+.reclutamiento-hero-title {
+  font-size: clamp(2.4rem, 8vw, 4.2rem);
+  font-weight: 800;
+  line-height: 1.05;
+  margin: 0 0 1.2rem;
+  text-transform: uppercase;
+  background: var(--gradient-title);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.reclutamiento-hero-text {
+  max-width: 58ch;
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+  margin: 0 0 2rem;
+}
+
+.reclutamiento-hero-ghost-wrap {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  width: clamp(360px, 55vw, 760px);
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.reclutamiento-hero-ghost {
+  display: block;
+  width: 100%;
+  height: auto;
+  opacity: 0.05;
+  user-select: none;
+  animation: wordmarkDrift 12s ease-in-out infinite;
+}
+
+.reclutamiento-hero > *:not(.reclutamiento-hero-ghost-wrap) {
+  position: relative;
+  z-index: 1;
+}
+
+/* Migas de pan simples para volver al inicio desde la página dedicada */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.back-link:hover,
+.back-link:focus-visible {
+  color: var(--color-primary);
 }
 
 /* ---------- Footer ---------- */
@@ -1055,6 +1547,10 @@ ul {
     align-items: center;
   }
 
+  .recruit-cta-centered {
+    flex-direction: column;
+  }
+
   .info-block {
     grid-template-columns: 0.8fr 1.2fr;
     gap: 2.5rem;
@@ -1071,11 +1567,25 @@ ul {
     border-radius: 999px;
     background: linear-gradient(180deg, var(--color-primary), var(--color-secondary));
   }
+
+  .requirements-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .process-steps {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .process-step + .process-step {
+    padding-top: 0;
+    border-top: none;
+  }
 }
 
 @media (min-width: 960px) {
-  .section-title {
-    font-size: 1.9rem;
+  .requirements-grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -1097,8 +1607,20 @@ ul {
   .hero-logo-wrap::before,
   .hero .btn-discord,
   .recruit-cta .btn-discord,
+  .join-teaser .btn-discord,
+  .reclutamiento-hero .btn-discord,
   .yt-play svg,
-  .discord-online-dot {
+  .discord-online-dot,
+  .watermark span,
+  .ghost-watermark,
+  .reclutamiento-hero-ghost,
+  .eyebrow::before {
     animation: none !important;
+  }
+
+  .reveal,
+  .reveal-scroll,
+  .reveal-left {
+    filter: none !important;
   }
 }

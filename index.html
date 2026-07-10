@@ -17,7 +17,7 @@
 
   <!-- Si JS está deshabilitado, el contenido con animación de scroll debe verse igual sin quedar oculto -->
   <noscript>
-    <style>.reveal { opacity: 1 !important; transform: none !important; }</style>
+    <style>.reveal, .reveal-scroll, .reveal-left { opacity: 1 !important; transform: none !important; filter: none !important; }</style>
   </noscript>
 </head>
 <body>
@@ -40,7 +40,7 @@
         <ul>
           <li><a href="#inicio" class="nav-link">Inicio</a></li>
           <li><a href="#historia" class="nav-link">Acerca de la Guild</a></li>
-          <li><a href="#reclutamiento" class="nav-link">Reclutamiento</a></li>
+          <li><a href="reclutamiento.html" class="nav-link">Reclutamiento</a></li>
         </ul>
         <a href="https://discord.gg/XnTrEKEGw" target="_blank" rel="noopener noreferrer" class="btn btn-discord btn-small">
           <!-- Ícono de Discord en SVG inline: sin librerías de íconos -->
@@ -61,6 +61,7 @@
         <div class="hero-logo-wrap">
           <img src="assets/mascota-fantasma-icono.svg" alt="Mascota fantasma de Special Delivery" class="hero-logo" width="180" height="180">
         </div>
+        <span class="eyebrow">Ragnarok Origin: Classic</span>
         <h1 class="hero-title">Special Delivery</h1>
         <p class="hero-tagline">Siendo competitivos desde el 2008</p>
 
@@ -89,12 +90,16 @@
          siempre visibles. Usa 100dvh (no 100vh) para el área fija, que es
          la unidad pensada para evitar los saltos de altura en iOS Safari
          cuando la barra de direcciones aparece/desaparece al scrollear. -->
-    <section id="historia" class="section section-fullscreen section-particles-host">
+    <section id="historia" class="section section-fullscreen section-particles-host watermark-host">
       <!-- Partículas decorativas de fondo, generadas por script.js. Puramente
            visuales (aria-hidden) y desactivadas con prefers-reduced-motion. -->
       <div class="particles" id="aboutParticles" aria-hidden="true"></div>
 
+      <!-- Palabra gigante en transparencia de fondo, puramente decorativa -->
+      <div class="watermark" aria-hidden="true"><span>Gremio</span></div>
+
       <div class="section-inner">
+        <span class="eyebrow reveal">Desde 2008</span>
         <h2 class="section-title reveal">Acerca de la Guild</h2>
       </div>
 
@@ -118,87 +123,114 @@
             </div>
           </div>
 
-          <!-- Lámina 2: liderazgo -->
+          <!-- Lámina 2: liderazgo — timeline vertical numerada (referencia: nostra.id/about).
+               El llenado de la línea y el "encendido" de cada escalón están
+               atados en JS al mismo valor "fade" del crossfade (ver
+               updateDeck en script.js), así que se dibujan en vivo con el
+               scroll en vez de aparecer todos juntos con un simple delay. -->
           <div class="deck-slide">
             <div class="section-inner">
               <div class="info-block">
                 <div class="info-block-title">
-                  <h3 class="section-subtitle">Liderazgo</h3>
+                  <span class="eyebrow">Liderazgo</span>
+                  <h3 class="section-subtitle">El mando no<br>se improvisa</h3>
+                  <p class="section-text leadership-text">La cadena de mando, de arriba hacia abajo: quienes marcan el rumbo, sostienen el estándar y mantienen unido al gremio.</p>
                   <span class="info-block-accent" aria-hidden="true"></span>
                 </div>
                 <div class="info-block-content">
-                  <div class="info-card">
-                    <div class="org-chart">
-                      <div class="org-tier org-tier-lead reveal-scroll">
-                        <p class="org-role">Guild Leader</p>
-                        <div class="org-people">
-                          <div class="org-person">
-                            <span class="org-avatar" aria-hidden="true">H</span>
-                            <span class="org-name">Hunteriwi</span>
-                          </div>
-                        </div>
-                      </div>
+                  <div class="timeline watermark-host" id="leadershipTimeline">
+                    <div class="watermark" aria-hidden="true"><span>Rangos</span></div>
 
-                      <div class="org-tier reveal-scroll">
-                        <p class="org-role">Vice Guild Leader</p>
-                        <div class="org-people">
-                          <div class="org-person">
-                            <span class="org-avatar" aria-hidden="true">A</span>
-                            <span class="org-name">Ahead</span>
-                          </div>
-                          <div class="org-person">
-                            <span class="org-avatar" aria-hidden="true">G</span>
-                            <span class="org-name">Gotic</span>
-                          </div>
-                          <div class="org-person">
-                            <span class="org-avatar" aria-hidden="true">S</span>
-                            <span class="org-name">Styan</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="org-tier reveal-scroll">
-                        <p class="org-role">Comandante</p>
-                        <div class="org-people">
-                          <div class="org-person">
-                            <span class="org-avatar" aria-hidden="true">P</span>
-                            <span class="org-name">Por definir</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="org-tier reveal-scroll">
-                        <p class="org-role">Oficiales</p>
-                        <div class="org-people">
-                          <div class="org-person">
-                            <span class="org-avatar" aria-hidden="true">P</span>
-                            <span class="org-name">Pendiente</span>
-                          </div>
-                          <div class="org-person">
-                            <span class="org-avatar" aria-hidden="true">P</span>
-                            <span class="org-name">Pendiente</span>
-                          </div>
-                          <div class="org-person">
-                            <span class="org-avatar" aria-hidden="true">P</span>
-                            <span class="org-name">Pendiente</span>
-                          </div>
-                          <div class="org-person">
-                            <span class="org-avatar" aria-hidden="true">P</span>
-                            <span class="org-name">Pendiente</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="org-tier reveal-scroll">
-                        <p class="org-role">Estrella del Carisma</p>
-                        <div class="org-people">
-                          <div class="org-person">
-                            <span class="org-avatar" aria-hidden="true">L</span>
-                            <span class="org-name">Lulupe</span>
-                          </div>
-                        </div>
-                      </div>
+                    <div class="timeline-line" aria-hidden="true">
+                      <span class="timeline-line-fill" id="timelineFill"></span>
                     </div>
+
+                    <ol class="timeline-list">
+                      <li class="timeline-step timeline-step-lead">
+                        <span class="timeline-node"><span class="timeline-node-num">01</span></span>
+                        <div class="timeline-content">
+                          <p class="timeline-role">Guild Leader</p>
+                          <div class="org-people">
+                            <div class="org-person">
+                              <span class="org-avatar" aria-hidden="true">H</span>
+                              <span class="org-name">Hunteriwi</span>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+
+                      <li class="timeline-step">
+                        <span class="timeline-node"><span class="timeline-node-num">02</span></span>
+                        <div class="timeline-content">
+                          <p class="timeline-role">Vice Guild Leader</p>
+                          <div class="org-people">
+                            <div class="org-person">
+                              <span class="org-avatar" aria-hidden="true">A</span>
+                              <span class="org-name">Ahead</span>
+                            </div>
+                            <div class="org-person">
+                              <span class="org-avatar" aria-hidden="true">G</span>
+                              <span class="org-name">Gotic</span>
+                            </div>
+                            <div class="org-person">
+                              <span class="org-avatar" aria-hidden="true">S</span>
+                              <span class="org-name">Styan</span>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+
+                      <li class="timeline-step">
+                        <span class="timeline-node"><span class="timeline-node-num">03</span></span>
+                        <div class="timeline-content">
+                          <p class="timeline-role">Comandante</p>
+                          <div class="org-people">
+                            <div class="org-person">
+                              <span class="org-avatar" aria-hidden="true">P</span>
+                              <span class="org-name">Por definir</span>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+
+                      <li class="timeline-step">
+                        <span class="timeline-node"><span class="timeline-node-num">04</span></span>
+                        <div class="timeline-content">
+                          <p class="timeline-role">Oficiales</p>
+                          <div class="org-people">
+                            <div class="org-person">
+                              <span class="org-avatar" aria-hidden="true">P</span>
+                              <span class="org-name">Pendiente</span>
+                            </div>
+                            <div class="org-person">
+                              <span class="org-avatar" aria-hidden="true">P</span>
+                              <span class="org-name">Pendiente</span>
+                            </div>
+                            <div class="org-person">
+                              <span class="org-avatar" aria-hidden="true">P</span>
+                              <span class="org-name">Pendiente</span>
+                            </div>
+                            <div class="org-person">
+                              <span class="org-avatar" aria-hidden="true">P</span>
+                              <span class="org-name">Pendiente</span>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+
+                      <li class="timeline-step">
+                        <span class="timeline-node"><span class="timeline-node-num">05</span></span>
+                        <div class="timeline-content">
+                          <p class="timeline-role">Estrella del Carisma</p>
+                          <div class="org-people">
+                            <div class="org-person">
+                              <span class="org-avatar" aria-hidden="true">L</span>
+                              <span class="org-name">Lulupe</span>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    </ol>
                   </div>
                 </div>
               </div>
@@ -212,8 +244,12 @@
     <!-- ============ MIRA NUESTROS VIDEOS ============ -->
     <!-- "Etapa" 3: a diferencia del resto, esta mide la mitad de la pantalla
          (min-height: 50vh) — es solo un carrusel, no necesita más espacio. -->
-    <section id="videos" class="section section-halfscreen">
+    <section id="videos" class="section section-halfscreen watermark-host">
+      <!-- Palabra gigante en transparencia de fondo, puramente decorativa -->
+      <div class="watermark" aria-hidden="true"><span>Contenido</span></div>
+
       <div class="section-inner">
+        <span class="eyebrow eyebrow-center reveal">Actividad</span>
         <h3 class="videos-title reveal">Mira nuestros videos y síguenos en redes</h3>
 
         <div class="social-links reveal">
@@ -260,35 +296,28 @@
       </div>
     </section>
 
-    <!-- ============ RECLUTAMIENTO ============ -->
-    <!-- "Etapa" 4 (última, antes del footer): altura completa igual que Hero y Acerca de la Guild -->
-    <section id="reclutamiento" class="section section-alt section-fullscreen">
-      <div class="section-inner">
-        <h2 class="section-title reveal">Reclutamiento</h2>
-        <p class="section-lead reveal">[Placeholder: qué busca la guild en nuevos miembros — actitud, compromiso, tipo de jugador que encaja con Special Delivery.]</p>
+    <!-- ============ RECLUTAMIENTO (teaser) ============ -->
+    <!-- "Etapa" 4 (última, antes del footer): teaser corto que invita a pasar
+         a la página dedicada de reclutamiento (reclutamiento.html), donde
+         está todo el detalle (requisitos, proceso de postulación, CTA a
+         Discord). Estilo inspirado en la sección "Grow with Nostra" de
+         nostra.id/recruitment. -->
+    <section id="reclutamiento" class="section section-alt section-fullscreen reclutamiento-teaser">
+      <!-- Mascota fantasma gigante en transparencia, puramente decorativa -->
+      <div class="ghost-watermark-wrap" aria-hidden="true">
+        <img src="assets/mascota-fantasma-icono.svg" alt="" class="ghost-watermark">
+      </div>
 
-        <h3 class="requirements-title reveal">Requisitos</h3>
-        <ul class="requirements-list">
-          <li class="reveal">[Nivel mínimo: placeholder]</li>
-          <li class="reveal">[Clases buscadas: placeholder]</li>
-          <li class="reveal">[Disponibilidad horaria: placeholder]</li>
-          <li class="reveal">[Uso de Discord y participación en eventos: placeholder]</li>
-          <li class="reveal">[Otro requisito: placeholder]</li>
-        </ul>
-
-        <div class="recruit-cta reveal">
-          <p class="recruit-cta-text">Las postulaciones se gestionan por Discord.</p>
-          <a href="https://discord.gg/XnTrEKEGw" target="_blank" rel="noopener noreferrer" class="btn btn-discord btn-large">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path fill="currentColor" d="M20.317 4.369a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.009c.12.099.246.198.373.292a.077.077 0 0 1-.006.128 12.3 12.3 0 0 1-1.873.891.076.076 0 0 0-.04.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.029 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.674-3.549-13.662a.06.06 0 0 0-.031-.028zM8.02 15.331c-1.183 0-2.157-1.086-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.419 0 1.333-.955 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.086-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.419 0 1.333-.946 2.419-2.157 2.419z"/>
-            </svg>
-            <span>Postular por Discord</span>
-            <span class="discord-online" data-discord-online hidden>
-              <span class="discord-online-dot" aria-hidden="true"></span>
-              <span class="discord-online-count" data-discord-online-count></span>
-            </span>
-          </a>
-        </div>
+      <div class="section-inner join-teaser">
+        <span class="eyebrow reveal">Únete a Special Delivery</span>
+        <h2 class="section-title join-teaser-title reveal">Crezcamos Juntos</h2>
+        <p class="join-teaser-text reveal">Creemos que la forma de llegar al TOP es jugando juntos.</p>
+        <a href="reclutamiento.html" class="btn btn-discord btn-large reveal">
+          <span>Únete a Special</span>
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path fill="currentColor" d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+          </svg>
+        </a>
       </div>
     </section>
 
@@ -305,7 +334,7 @@
       <nav class="footer-nav" aria-label="Enlaces rápidos">
         <a href="#inicio">Inicio</a>
         <a href="#historia">Acerca de la Guild</a>
-        <a href="#reclutamiento">Reclutamiento</a>
+        <a href="reclutamiento.html">Reclutamiento</a>
       </nav>
 
       <a href="https://discord.gg/XnTrEKEGw" target="_blank" rel="noopener noreferrer" class="footer-discord" aria-label="Discord de Special Delivery">
